@@ -1,5 +1,5 @@
+const { logInschema } = require("../../validations/logIn");
 const mongoose = require("mongoose");
-
 
 const userSchema = new mongoose.Schema({
     token_id: {
@@ -36,5 +36,10 @@ const userSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
+
+userSchema.statics.logInValidation = function (body) {
+    return logInschema.validate(body, { abortEarly: false });
+};
+
 
 module.exports = mongoose.model("User", userSchema, 'user');
