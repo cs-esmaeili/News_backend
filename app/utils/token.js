@@ -11,13 +11,15 @@ exports.createToken = async (unicData, token_id = null, time = null) => {
             text += await new Date();
         }
         let token = await bcrypt.hash(text, salt);
-        const result = await Token.find({ _id: token_id });
+        let result = await Token.find({ _id: token_id });
         if (result.length > 0) {
-            await Token.updateOne({ _id: token_id }, { token });
+            result = await Token.updateOne({ _id: token_id }, { token });
+            result = await Token.find({ _id: token_id });
+            result = result[0];
         } else {
-            await Token.create({ token });
+            result = await Token.create({ token });
         }
-        return token;
+        return result;
     } catch (error) {
         console.error('Error updating or creating document:', error);
     }
