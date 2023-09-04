@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { connect } = require('./app/database');
 const postRoute = require("./app/routes/post");
+const admin = require("./app/routes/admin");
 const app = express();
 //* Database connection
 connect(app);
@@ -37,6 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 //* Routes
 // app.use("/", require("./routes/blog"));
+app.use("/admin", admin);
 app.use("/post", postRoute);
 // app.use("/dashboard", require("./routes/dashboard"));
 

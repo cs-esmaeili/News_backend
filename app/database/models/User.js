@@ -1,4 +1,5 @@
-const { logInschema } = require("../../validations/logIn");
+const { logInSchema } = require("../../validations/admin/logIn");
+const { registerSchema } = require("../../validations/admin/register");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -8,8 +9,9 @@ const userSchema = new mongoose.Schema({
     userName: {
         type: Number,
         required: true,
+        unique: true,
     },
-    password: {
+    passWord: {
         type: String,
         max: 50,
         min: 4,
@@ -38,7 +40,10 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.logInValidation = function (body) {
-    return logInschema.validate(body, { abortEarly: false });
+    return logInSchema.validate(body, { abortEarly: false });
+};
+userSchema.statics.registerValidation = function (body) {
+    return registerSchema.validate(body, { abortEarly: false });
 };
 
 
