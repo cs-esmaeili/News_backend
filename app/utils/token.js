@@ -1,8 +1,8 @@
 const Token = require('../database/models/Token');
-const { hashData } = require('../utils/hashData');
+const bcrypt = require('bcryptjs');
 exports.createToken = async (unicData, token_id = null) => {
     try {
-        const hash = await hashData(unicData);
+        const hash = await bcrypt.hash(unicData, 10);
         let result = await Token.find({ _id: token_id });
         if (result.length > 0) {
             result = await Token.updateOne({ _id: token_id }, { token: hash });

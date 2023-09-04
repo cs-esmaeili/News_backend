@@ -1,14 +1,15 @@
 const { createToken } = require("../../utils/token");
-const { hashData } = require("../../utils/hashData");
 const User = require("../../database/models/User");
 const PermissionGp = require("../../database/models/PermissionGp");
+const bcrypt = require('bcryptjs');
 
 exports.logIn = async (req, res, next) => {
     try {
         await User.logInValidation(req.body);
         const { userName, passWord } = await req.body;
-        const user = await User.findOne({ userName, passWord });
-        if (!user) {
+        const user = await User.findOne({ userName });
+        const check = await bcrypt.compare(passWord, user.passWord);
+        if (!user || !check) {
             const error = new Error();
             error.message = { status: "fail", message: "نام کاربری یا رمز عبور نادرست می باشد" };
             error.statusCode = 422;
@@ -51,7 +52,7 @@ exports.register = async (req, res, next) => {
         const result = await User.create({
             token_id: token._id,
             userName,
-            passWord: await hashData(passWord),
+            passWord: await bcrypt.hash(passWord, 10),
             permissionGp_id
         });
         res.json(result);
