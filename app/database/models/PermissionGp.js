@@ -6,6 +6,10 @@ const permissionGpSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    permissions: {
+        type: Array,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

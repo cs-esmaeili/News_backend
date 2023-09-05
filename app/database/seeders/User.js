@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 
 const seqNumber = 3;
 const seed = async (app) => {
-    const permissionGp = await PermissionGp.find({ name: "MainPermissionGp" });
+    const permissionGp = await PermissionGp.find({ name: "admin" });
     const result = await createToken(process.env.ADMIN_USERNAME);
     await User.create({
         token_id: result._id,

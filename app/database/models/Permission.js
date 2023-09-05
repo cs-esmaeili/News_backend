@@ -6,12 +6,9 @@ const permissionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    url_route: {
+    route: {
         type: String,
         required: true,
-    },
-    permissionGp_id: {
-        type: mongoose.ObjectId
     },
     createdAt: {
         type: Date,

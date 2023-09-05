@@ -1,9 +1,20 @@
 const PermissionGp = require('../models/PermissionGp');
+const Permission = require('../models/Permission');
 const { green, red } = require('colors');
 
-const seqNumber = 1;
+const seqNumber = 2;
 const seed = async () => {
-    await PermissionGp.create({ name: 'MainPermissionGp' });
+
+    const permissions = await Permission.find({});
+
+    let permissionIds = [];
+    for (const key in permissions) {
+        const id = permissions[key]._id;
+        permissionIds.push(id);
+    }
+
+    await PermissionGp.create({ name: 'admin', permissions: permissionIds });
+    await PermissionGp.create({ name: 'user', permissions: permissionIds });
 
     await console.log(`${red(seqNumber)} : ${green('PermissionGp seed done')}`);
 }
