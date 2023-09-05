@@ -3,15 +3,14 @@ const { mCreateCategory } = require('../../../messages.json');
 
 exports.createCategory = async (req, res, next) => {
     try {
-        console.log(mCreateCategory.ok);
-        // const { name } = req.body;
+        const { name } = req.body;
 
-        // const result = await Category.create({ name });
-        // if (result) {
-        //     res.send({ status: "ok"});
-
-        // }
-
+        const result = await Category.create({ name });
+        if (result) {
+            res.send({ status: "ok", message: mCreateCategory.ok });
+        } else {
+            res.send({ status: "fail", message: mCreateCategory.fail });
+        }
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }

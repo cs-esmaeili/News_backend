@@ -2,6 +2,7 @@ const { createToken } = require("../../utils/token");
 const User = require("../../database/models/User");
 const PermissionGp = require("../../database/models/PermissionGp");
 const bcrypt = require('bcryptjs');
+const { mlogIn, mregister } = require('../../../messages.json');
 
 exports.logIn = async (req, res, next) => {
     try {
@@ -11,14 +12,14 @@ exports.logIn = async (req, res, next) => {
         const check = await bcrypt.compare(passWord, user.passWord);
         if (!user || !check) {
             const error = new Error();
-            error.message = { status: "fail", message: "نام کاربری یا رمز عبور نادرست می باشد" };
+            error.message = { status: "fail", message: mlogIn.fail_1 };
             error.statusCode = 422;
             throw error;
         }
         const { token } = await createToken(userName, user.token_id);
         if (token == false) {
             const error = new Error();
-            error.message = { status: "fail", message: "مشکلی در وارد شدن به وجود آمد دوباره تلاش کنید" };
+            error.message = { status: "fail", message: mlogIn.fail_2 };
             error.statusCode = 500;
             throw error;
         }
@@ -36,14 +37,14 @@ exports.register = async (req, res, next) => {
         let user = await User.findOne({ userName });
         if (user) {
             const error = new Error();
-            error.message = "حساب کاربری وجود دارد";
+            error.message = mregister.fail_1;
             error.statusCode = 422;
             throw error;
         }
         let permissionGp = await PermissionGp.findOne({ _id: permissionGp_id });
         if (!permissionGp) {
             const error = new Error();
-            error.message = "گروه دسترسی وجود ندارد";
+            error.message = mregister.fail_2;
             error.statusCode = 422;
             throw error;
         }
