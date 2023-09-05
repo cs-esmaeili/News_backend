@@ -1,5 +1,5 @@
-const Post = require('../database/models/Post');
-const { createToken } = require('../utils/token');
+const Post = require('../../database/models/Post');
+const { createToken } = require('../../utils/token');
 exports.postList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
