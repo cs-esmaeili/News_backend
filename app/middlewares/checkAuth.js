@@ -13,16 +13,21 @@ exports.checkRoutePermission = async (req, res, next) => {
             req.token = bearerToken;
             const currentRoute = req.path;
             const tokenObject = await Token.findOne({ token: bearerToken });
+            if (tokenObject == null) {
+                res.status(500).json({ error: 'Bearer Token is wrong' });
+                return;
+            }
             const user = await User.findOne({ token_id: tokenObject._id });
             const permissionGp = (await PermissionGp.findOne({ _id: user.permissionGp_id })).permissions;
             const permission = await Permission.find({ _id: { $in: permissionGp }, route: currentRoute });
             if (permission.length === 0) {
                 res.status(403).json({ error: 'Access denied: Insufficient permissions' });
-            } else {
-                next();
+                return;
             }
+            next();
         } else {
             res.status(500).json({ error: 'Bearer Token is missing' });
+            return;
         }
     } catch (error) {
         res.status(error.statusCode || 500).json("Server Error");

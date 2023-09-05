@@ -4,9 +4,9 @@ const fileUpload = require("express-fileupload");
 const express = require("express");
 const mongoose = require("mongoose");
 const { connect } = require('./app/database');
-const postRoute = require("./app/routes/post");
+const userRoute = require("./app/routes/user");
+const adminRoute = require("./app/routes/admin");
 const { checkRoutePermission } = require("./app/middlewares/checkAuth");
-const admin = require("./app/routes/admin");
 const app = express();
 //* Database connection
 connect(app);
@@ -26,8 +26,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 //* Routes
-app.use("/admin", admin);
-app.use("/post", postRoute);
+app.use("/admin", adminRoute);
+app.use("/user", userRoute);
 
 //* 404 Page
 // app.use(require("./controllers/errorController").get404);

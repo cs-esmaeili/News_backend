@@ -1,22 +1,6 @@
 const mongoose = require("mongoose");
 
 
-
-const bodySchema = new mongoose.Schema({
-    video_url: {
-        type: String,
-        trim: true,
-    },
-    image_url: {
-        type: String,
-        trim: true,
-    },
-    text: {
-        type: String,
-        trim: true,
-    },
-});
-
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
