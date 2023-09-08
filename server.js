@@ -18,7 +18,7 @@ app.use(express.json());
 //* File Upload Middleware
 app.use(fileUpload());
 
-app.use(checkRoutePermission);
+// app.use(checkRoutePermission);
 
 
 //* Static Folder

@@ -2,7 +2,7 @@ const { createToken } = require("../../utils/token");
 const User = require("../../database/models/User");
 const PermissionGp = require("../../database/models/PermissionGp");
 const bcrypt = require('bcryptjs');
-const { mlogIn, mregister } = require('../../../messages.json');
+const { mlogIn, mRegister } = require('../../../messages.json');
 
 exports.logIn = async (req, res, next) => {
     try {
@@ -37,14 +37,14 @@ exports.register = async (req, res, next) => {
         let user = await User.findOne({ userName });
         if (user) {
             const error = new Error();
-            error.message = mregister.fail_1;
+            error.message = mRegister.fail_1;
             error.statusCode = 422;
             throw error;
         }
         let permissionGp = await PermissionGp.findOne({ _id: permissionGp_id });
         if (!permissionGp) {
             const error = new Error();
-            error.message = mregister.fail_2;
+            error.message = mRegister.fail_2;
             error.statusCode = 422;
             throw error;
         }

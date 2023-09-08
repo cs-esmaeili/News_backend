@@ -1,21 +1,27 @@
+const mongoose = require('mongoose');
 const Post = require('../../database/models/Post');
-exports.postList = async (req, res, next) => {
+const { mCreatePost } = require('../../../messages.json');
+
+exports.createPost = async (req, res, next) => {
     try {
-        const { page, perPage } = req.body;
+        const { title, disc, category_id, permissionGp_id, body, auther } = req.body;
 
-
-        const posts = await Post.create({
+        const result = await Post.create({
             title,
             disc,
-            category_id,
-            permissionGp_id,
+            category_id: new mongoose.Types.ObjectId(category_id),
+            permissionGp_id: new mongoose.Types.ObjectId(permissionGp_id),
             body,
-            views,
+            views: 0,
             auther,
         });
 
+        if (result) {
+            res.send({ status: "ok", message: mCreatePost.ok });
+        } else {
+            res.send({ status: "fail", message: mCreatePost.fail });
+        }
 
-        res.send({ status: "ok", posts });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }
