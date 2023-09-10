@@ -26,5 +26,13 @@
     "mUpdateCategory": {
         "ok": "دسته بندی بروز شد",
         "fail": "دسته بندی بروز نشد"
+    },
+    "mDeletePermissionGp": {
+        "ok": "دسته بندی حذف شد",
+        "fail": "دسته بندی حذف نشد"
+    },
+    "mUpdatePermissionGp": {
+        "ok": "دسته بندی بروز شد",
+        "fail": "دسته بندی بروز نشد"
     }
 }

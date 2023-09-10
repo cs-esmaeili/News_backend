@@ -2,7 +2,7 @@ const PermissionGp = require('../../database/models/PermissionGp');
 const User = require('../../database/models/User');
 const mongoose = require('mongoose');
 const { transaction } = require('../../database');
-const { mCreatePermissionGp } = require('../../../messages.json');
+const { mCreatePermissionGp, mUpdatePermissionGp, mDeletePermissionGp } = require('../../../messages.json');
 
 exports.createPermissionGp = async (req, res, next) => {
     try {
@@ -41,9 +41,22 @@ exports.deletePermissionGp = async (req, res, next) => {
             }
         });
         if (result) {
-            res.send({ status: "ok", message: mCreatePermissionGp.ok });
+            res.send({ status: "ok", message: mDeletePermissionGp.ok });
         } else {
-            res.send({ status: "fail", message: mCreatePermissionGp.fail });
+            res.send({ status: "fail", message: mDeletePermissionGp.fail });
+        }
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+exports.updatePermissionGp = async (req, res, next) => {
+    try {
+        const { permissionGp_id, name, permissions } = req.body;
+        const updateResult = await PermissionGp.updateOne({ _id: permissionGp_id }, { name, permissions });
+        if (updateResult.modifiedCount == 1) {
+            res.send({ status: "ok", message: mUpdatePermissionGp.ok });
+        } else {
+            res.send({ status: "fail", message: mUpdatePermissionGp.fail });
         }
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
