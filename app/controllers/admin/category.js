@@ -1,6 +1,7 @@
 const { transaction } = require('../../database');
 const Category = require('../../database/models/Category');
 const Post = require('../../database/models/Post');
+const { mCreateCategory, mDeleteCategory, mUpdateCategory } = require('../../../messages.json');
 const { mCreateCategory } = require('../../../messages.json');
 
 exports.createCategory = async (req, res, next) => {
@@ -35,9 +36,22 @@ exports.deleteCategory = async (req, res, next) => {
             }
         });
         if (result) {
-            res.send({ status: "ok", message: mCreateCategory.ok });
+            res.send({ status: "ok", message: mDeleteCategory.ok });
         } else {
-            res.send({ status: "fail", message: mCreateCategory.fail });
+            res.send({ status: "fail", message: mDeleteCategory.fail });
+        }
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+exports.updateCategory = async (req, res, next) => {
+    try {
+        const { category_id, name } = req.body;
+        const updateResult = await Category.updateOne({ _id: category_id }, { name });
+        if (updateResult.modifiedCount == 1) {
+            res.send({ status: "ok", message: mUpdateCategory.ok });
+        } else {
+            res.send({ status: "fail", message: mUpdateCategory.fail });
         }
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
