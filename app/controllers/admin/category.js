@@ -2,7 +2,6 @@ const { transaction } = require('../../database');
 const Category = require('../../database/models/Category');
 const Post = require('../../database/models/Post');
 const { mCreateCategory, mDeleteCategory, mUpdateCategory } = require('../../../messages.json');
-const { mCreateCategory } = require('../../../messages.json');
 
 exports.createCategory = async (req, res, next) => {
     try {
@@ -28,7 +27,6 @@ exports.deleteCategory = async (req, res, next) => {
                 throw error;
             }
             const updateResult = await Post.updateMany({ category_id }, { category_id: newCategory_id });
-            console.log(updateResult);
             if (updateResult.modifiedCount == 0) {
                 const error = new Error();
                 error.message = "newCategory_id for update notFound !";
