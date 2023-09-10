@@ -8,19 +8,29 @@ const database = encodeURIComponent(process.env.DB_DATABASE);
 
 const uri = `mongodb://${username}:${password}@${host}:${port}/${database}?authSource=admin&authMechanism=DEFAULT`;
 
-const connectDB = async () => {
+const connectDB = async (transaction) => {
     try {
         const result = await mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
+
         console.log('Connected To Database');
     } catch (e) {
         console.log(e);
     }
 }
-
+const checkConnection = () => {
+    // Check the connection state
+    if (mongoose.connection.readyState === 1) {
+        console.log('Connection is open');
+    } else {
+        console.log('Connection is not open');
+    }
+}
 module.exports = {
+    connection: mongoose.connection,
+    checkConnection,
     connectDB,
-    uri
+    uri,
 };

@@ -1,11 +1,13 @@
 const { createToken } = require("../../utils/token");
 const User = require("../../database/models/User");
+const { checkConnection } = require("../../../config/database");
 const PermissionGp = require("../../database/models/PermissionGp");
 const bcrypt = require('bcryptjs');
 const { mlogIn, mRegister } = require('../../../messages.json');
 
 exports.logIn = async (req, res, next) => {
     try {
+        checkConnection();
         await User.logInValidation(req.body);
         const { userName, passWord } = await req.body;
         const user = await User.findOne({ userName });
