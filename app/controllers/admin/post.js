@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('../../database/models/Post');
-const { mCreatePost } = require('../../../messages.json');
+const { mCreatePost, mDeletePost } = require('../../../messages.json');
 
 exports.createPost = async (req, res, next) => {
     try {
@@ -22,6 +22,21 @@ exports.createPost = async (req, res, next) => {
             res.send({ status: "fail", message: mCreatePost.fail });
         }
 
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+exports.deletePost = async (req, res, next) => {
+    try {
+        const { post_id } = req.body;
+
+        const deletedResult = await Post.deleteOne({ _id: post_id });
+        if (deletedResult.deletedCount == 0) {
+            const error = new Error();
+            error.message = "post_id for delete notFound !";
+            throw error;
+        }
+        res.send({ status: "ok", message: mDeletePost.ok });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }
