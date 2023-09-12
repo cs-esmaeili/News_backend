@@ -8,5 +8,7 @@ const router = new Router();
 router.post("/postList", userPost.postList);
 router.post("/postSerach", userPost.postSerach);
 router.post("/createPost", adminPost.createPost);
+router.post("/updatePost", adminPost.updatePost);
+router.post("/deletePost", adminPost.deletePost);
 
 module.exports = router;
