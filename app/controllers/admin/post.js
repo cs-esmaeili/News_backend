@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('../../database/models/Post');
-const { mCreatePost, mDeletePost } = require('../../../messages.json');
+const { mCreatePost, mDeletePost, mUpdatePost } = require('../../../messages.json');
 
 exports.createPost = async (req, res, next) => {
     try {
@@ -37,6 +37,27 @@ exports.deletePost = async (req, res, next) => {
             throw error;
         }
         res.send({ status: "ok", message: mDeletePost.ok });
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+exports.updatePost = async (req, res, next) => {
+    try {
+        const { post_id, title, disc, category_id, permissionGp_id, body, auther } = req.body;
+        const updateResult = await Post.updateOne({ _id: post_id }, {
+            title,
+            disc,
+            category_id: new mongoose.Types.ObjectId(category_id),
+            permissionGp_id: new mongoose.Types.ObjectId(permissionGp_id),
+            body,
+            views: 0,
+            auther,
+        });
+        if (updateResult.modifiedCount == 1) {
+            res.send({ status: "ok", message: mUpdatePost.ok });
+        } else {
+            res.send({ status: "fail", message: mUpdatePost.fail });
+        }
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }
