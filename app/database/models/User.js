@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     data: {
+        image: String,
         card_number: String,
         national_code: String,
         birthday: Date,

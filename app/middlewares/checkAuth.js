@@ -8,10 +8,10 @@ const Permission = require('./../database/models/Permission');
 exports.checkRoutePermission = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
+        const currentRoute = req.path;
         if (authHeader && authHeader.startsWith('Bearer ')) {
             const bearerToken = extractBearer(authHeader);
             req.token = bearerToken;
-            const currentRoute = req.path;
             const tokenObject = await Token.findOne({ token: bearerToken });
             if (tokenObject == null) {
                 res.status(500).json({ error: 'Bearer Token is wrong' });
@@ -24,6 +24,7 @@ exports.checkRoutePermission = async (req, res, next) => {
                 res.status(403).json({ error: 'Access denied: Insufficient permissions' });
                 return;
             }
+            req.body.user = user;
             next();
         } else {
             res.status(500).json({ error: 'Bearer Token is missing' });

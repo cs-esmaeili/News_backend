@@ -21,7 +21,6 @@ const connectDB = async (transaction) => {
     }
 }
 const checkConnection = () => {
-    // Check the connection state
     if (mongoose.connection.readyState === 1) {
         console.log('Connection is open');
     } else {
