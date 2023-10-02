@@ -30,7 +30,6 @@ exports.transaction = async (querys) => {
         // Rollback the transaction
         await session.abortTransaction();
         // console.log('Transaction rolled back.');
-
         session.endSession();
         // console.log('Session closed.');
         return error;
