@@ -12,15 +12,15 @@ exports.createPermissionGp = async (req, res, next) => {
             name,
             permissions: convertedPermissions,
         });
-
         if (result) {
-            res.send({ status: "ok", message: mCreatePermissionGp.ok });
-        } else {
-            res.send({ status: "fail", message: mCreatePermissionGp.fail });
+            res.send({ message: mCreatePermissionGp.ok });
+            return;
         }
-
+        const error = new Error();
+        error.message = { message: mCreatePermissionGp.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
 exports.deletePermissionGp = async (req, res, next) => {
@@ -41,12 +41,14 @@ exports.deletePermissionGp = async (req, res, next) => {
             }
         });
         if (result) {
-            res.send({ status: "ok", message: mDeletePermissionGp.ok });
-        } else {
-            res.send({ status: "fail", message: mDeletePermissionGp.fail });
+            res.send({ message: mDeletePermissionGp.ok });
+            return;
         }
+        const error = new Error();
+        error.message = { message: mDeletePermissionGp.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
 exports.updatePermissionGp = async (req, res, next) => {
@@ -55,10 +57,12 @@ exports.updatePermissionGp = async (req, res, next) => {
         const updateResult = await PermissionGp.updateOne({ _id: permissionGp_id }, { name, permissions });
         if (updateResult.modifiedCount == 1) {
             res.send({ status: "ok", message: mUpdatePermissionGp.ok });
-        } else {
-            res.send({ status: "fail", message: mUpdatePermissionGp.fail });
+            return;
         }
+        const error = new Error();
+        error.message = { message: mUpdatePermissionGp.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }

@@ -8,12 +8,15 @@ exports.createCategory = async (req, res, next) => {
         const { name } = req.body;
         const result = await Category.create({ name });
         if (result) {
-            res.send({ status: "ok", message: mCreateCategory.ok });
-        } else {
-            res.send({ status: "fail", message: mCreateCategory.fail });
+            res.send({ message: mCreateCategory.ok });
+            return;
         }
+        const error = new Error();
+        error.message = { message: mCreateCategory.fail };
+        error.statusCode = 401;
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
 exports.deleteCategory = async (req, res, next) => {
@@ -35,7 +38,7 @@ exports.deleteCategory = async (req, res, next) => {
     if (result === true) {
         res.send({ message: mDeleteCategory.ok });
     } else {
-        res.status(result.statusCode || 422).json(result.errors || result.message);
+        res.status(result.statusCode || 422).json(result.message || { message: mDeleteCategory.fail });
     }
 }
 exports.updateCategory = async (req, res, next) => {
@@ -44,10 +47,12 @@ exports.updateCategory = async (req, res, next) => {
         const updateResult = await Category.updateOne({ _id: category_id }, { name });
         if (updateResult.modifiedCount == 1) {
             res.send({ status: "ok", message: mUpdateCategory.ok });
-        } else {
-            res.send({ status: "fail", message: mUpdateCategory.fail });
+            return;
         }
+        const error = new Error();
+        error.message = { message: mUpdateCategory.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }

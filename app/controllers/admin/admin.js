@@ -25,7 +25,7 @@ exports.logIn = async (req, res, next) => {
         }
         res.send({ token });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 
 }
@@ -58,6 +58,6 @@ exports.register = async (req, res, next) => {
         });
         res.json(result);
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }

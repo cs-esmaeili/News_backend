@@ -5,7 +5,6 @@ const { mCreatePost, mDeletePost, mUpdatePost } = require('../../../messages.jso
 exports.createPost = async (req, res, next) => {
     try {
         const { title, disc, category_id, permissionGp_id, body, auther } = req.body;
-
         const result = await Post.create({
             title,
             disc,
@@ -15,30 +14,29 @@ exports.createPost = async (req, res, next) => {
             views: 0,
             auther,
         });
-
         if (result) {
-            res.send({ status: "ok", message: mCreatePost.ok });
-        } else {
-            res.send({ status: "fail", message: mCreatePost.fail });
+            res.send({ message: mCreatePost.ok });
+            return;
         }
-
+        const error = new Error();
+        error.message = { message: mCreatePost.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
 exports.deletePost = async (req, res, next) => {
     try {
         const { post_id } = req.body;
-
         const deletedResult = await Post.deleteOne({ _id: post_id });
         if (deletedResult.deletedCount == 0) {
             const error = new Error();
-            error.message = "post_id for delete notFound !";
+            error.message = { message: mDeletePost.fail };
             throw error;
         }
-        res.send({ status: "ok", message: mDeletePost.ok });
+        res.send({ message: mDeletePost.ok });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
 exports.updatePost = async (req, res, next) => {
@@ -54,11 +52,13 @@ exports.updatePost = async (req, res, next) => {
             auther,
         });
         if (updateResult.modifiedCount == 1) {
-            res.send({ status: "ok", message: mUpdatePost.ok });
-        } else {
-            res.send({ status: "fail", message: mUpdatePost.fail });
+            res.send({ message: mUpdatePost.ok });
+            return;
         }
+        const error = new Error();
+        error.message = { message: mUpdatePost.fail };
+        throw error;
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err.message);
     }
 }
