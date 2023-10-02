@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //* Routes
 
 app.use("/admin", globalRoute);
-app.use(checkRoutePermission);
+// app.use(checkRoutePermission);
 app.use("/admin", adminRoute);
 app.use("/user", userRoute);
 

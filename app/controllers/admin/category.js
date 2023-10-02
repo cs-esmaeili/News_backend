@@ -17,29 +17,25 @@ exports.createCategory = async (req, res, next) => {
     }
 }
 exports.deleteCategory = async (req, res, next) => {
-    try {
-        const { category_id, newCategory_id } = req.body;
-        const result = transaction(async () => {
-            const deletedResult = await Category.deleteOne({ _id: category_id });
-            if (deletedResult.deletedCount == 0) {
-                const error = new Error();
-                error.message = "category_id for delete notFound !";
-                throw error;
-            }
-            const updateResult = await Post.updateMany({ category_id }, { category_id: newCategory_id });
-            if (updateResult.modifiedCount == 0) {
-                const error = new Error();
-                error.message = "newCategory_id for update notFound !";
-                throw error;
-            }
-        });
-        if (result) {
-            res.send({ status: "ok", message: mDeleteCategory.ok });
-        } else {
-            res.send({ status: "fail", message: mDeleteCategory.fail });
+    const { category_id, newCategory_id } = req.body;
+    const result = transaction(async () => {
+        const deletedResult = await Category.deleteOne({ _id: category_id });
+        if (deletedResult.deletedCount == 0) {
+            const error = new Error();
+            error.message = "category_id for delete notFound !";
+            throw error;
         }
-    } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        const updateResult = await Post.updateMany({ category_id }, { category_id: newCategory_id });
+        if (updateResult.modifiedCount == 0) {
+            const error = new Error();
+            error.message = "newCategory_id for update notFound !";
+            throw error;
+        }
+    });
+    if (result === true) {
+        res.send({ message: mDeleteCategory.ok });
+    } else {
+        res.status(result.statusCode || 422).json(result.errors || result.message);
     }
 }
 exports.updateCategory = async (req, res, next) => {

@@ -18,9 +18,9 @@ exports.transaction = async (querys) => {
 
         // Commit the transaction
         await session.commitTransaction();
-        console.log('Transaction committed successfully.');
+        // console.log('Transaction committed successfully.');
         session.endSession();
-        console.log('Session closed.');
+        // console.log('Session closed.');
         return true;
     } catch (error) {
         // Handle any errors
@@ -29,10 +29,10 @@ exports.transaction = async (querys) => {
 
         // Rollback the transaction
         await session.abortTransaction();
-        console.log('Transaction rolled back.');
+        // console.log('Transaction rolled back.');
 
         session.endSession();
-        console.log('Session closed.');
-        return false;
+        // console.log('Session closed.');
+        return error;
     }
 }
