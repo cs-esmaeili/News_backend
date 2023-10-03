@@ -51,8 +51,19 @@
         "ok": "فایل حذف شد",
         "fail": "فایل حذف نشد"
     },
-    "deleteFolder": {
+    "mDeleteFolder": {
         "ok": "پوشه حذف شد",
         "fail": "پوشه حذف نشد"
+    },
+    "mCreateFolder": {
+        "ok": "پوشه ساخته شد",
+        "fail": "پوشه ساخته نشد"
+    },
+    "mRenameFolder": {
+        "ok": "نام پوشه تغییر کرد",
+        "fail": "نام پوشه تغییر نکرد"
+    },
+    "mFolderFileList": {
+        "fail": "خطا در  دریافت فایل ها"
     }
 }

@@ -8,5 +8,7 @@ router.post("/saveFile", file.saveFile);
 router.delete("/deleteFile", file.deleteFile);
 router.delete("/deleteFolder", file.deleteFolder);
 router.post("/folderFileList", file.folderFileList);
+router.post("/createFolder", file.createFolder);
+router.post("/renameFolder", file.renameFolder);
 
 module.exports = router;
