@@ -25,12 +25,12 @@ app.use(fileUpload());
 app.use(cors());
 
 //* Static Folder
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "app", "public")));
 
 
 //* Routes
 
-app.use("/admin", globalRoute);
+app.use("/global", globalRoute);
 // app.use(checkRoutePermission);
 app.use("/admin", adminRoute);
 app.use("/user", userRoute);

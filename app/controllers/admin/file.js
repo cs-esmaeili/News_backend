@@ -1,10 +1,11 @@
 const File = require("../../database/models/File");
 const path = require('path');
 const fs = require('fs');
-const BaseFileDir = path.join(process.cwd(), process.env.STORAGE_LOCATION);
+const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 const { v4: uuidv4 } = require('uuid');
 const { transaction } = require('../../database');
 const { mSaveFile, mDeleteFile, deleteFolder } = require('../../../messages.json');
+
 
 exports.saveFile = async (req, res, next) => {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -49,10 +50,8 @@ exports.deleteFile = async (req, res, next) => {
     });
     if (res != null) {
         if (result === true) {
-            console.log("12");
             res.send({ message: mDeleteFile.ok });
         } else {
-            console.log("1");
             res.status(result.statusCode || 422).json({ message: mDeleteFile.fail });
         }
     } else {
@@ -74,5 +73,38 @@ exports.deleteFolder = async (req, res, next) => {
     } catch (error) {
         res.status(error.statusCode || 422).json({ message: deleteFolder.fail });
     }
+}
 
+// exports.file = async (req, res, next) => {
+//     try {
+//         const { file_id } = req.params;
+//         const file = await File.findOne({ _id: file_id });
+//         if (!file) {
+//             const error = new Error();
+//             error.message = { message: mDeleteFile.fail };
+//             error.statusCode = 422;
+//             throw error;
+//         }
+//         const fileLocation = path.join(BaseFileDir, file.location, file.name);
+//         res.sendFile(fileLocation);
+//     } catch (error) {
+//         res.status(error.statusCode || 422).json({ message: deleteFolder.fail });
+//     }
+// }
+
+exports.folderFileList = async (req, res, next) => {
+
+    const { location } = req.body;
+    try {
+        const folderLocation = path.join(BaseFileDir, ...location);
+        const files = fs.readdirSync(folderLocation, { recursive: true });
+        const baseUrl = process.env.BASE_URL +
+            [JSON.parse(process.env.STORAGE_LOCATION)[2], ...location].join("/") +
+            "/";
+        console.log(baseUrl);
+        res.send({ baseUrl, files });
+    } catch (error) {
+        console.log(error);
+        res.status(error.statusCode || 422).json({ message: deleteFolder.fail });
+    }
 }
