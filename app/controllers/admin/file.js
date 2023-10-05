@@ -4,7 +4,7 @@ const fs = require('fs');
 const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 const { v4: uuidv4 } = require('uuid');
 const { transaction } = require('../../database');
-const { mSaveFile, mDeleteFile, mDeleteFolder, mFolderFileList, mCreateFolder, mRenameFolder } = require('../../../messages.json');
+const { mSaveFile, mDeleteFile, mDeleteFolder, mFolderFileList, mCreateFolder, mRenameFolder, mRenameFile } = require('../../../messages.json');
 const { getFilesFromFolder } = require('../../utils/file');
 
 
@@ -56,7 +56,6 @@ exports.deleteFile = async (req, res, next) => {
             res.status(result.statusCode || 422).json({ message: mDeleteFile.fail });
         }
     } else {
-        console.log(file_id);
         return (true);
     }
 }
@@ -78,30 +77,28 @@ exports.deleteFolder = async (req, res, next) => {
             await this.deleteFile({ body: { file_id: file._id } }, null, null);
         }
         await fs.rmSync(folderLocation, { recursive: true });
-        console.log(folderLocation);
         res.send({ message: mDeleteFolder.ok });
     } catch (error) {
         res.status(error.statusCode || 422).json({ message: mDeleteFolder.fail });
     }
 }
 
-// exports.file = async (req, res, next) => {
-//     try {
-//         const { file_id } = req.params;
-//         const file = await File.findOne({ _id: file_id });
-//         if (!file) {
-//             const error = new Error();
-//             error.message = { message: mDeleteFile.fail };
-//             error.statusCode = 422;
-//             throw error;
-//         }
-//         const fileLocation = path.join(BaseFileDir, file.location, file.name);
-//         res.sendFile(fileLocation);
-//     } catch (error) {
-//         res.status(error.statusCode || 422).json({ message: deleteFolder.fail });
-//     }
-// }
-
+exports.file = async (req, res, next) => {
+    try {
+        const { file_id } = req.params;
+        const file = await File.findOne({ _id: file_id });
+        if (!file) {
+            const error = new Error();
+            error.message = { message: mDeleteFile.fail };
+            error.statusCode = 422;
+            throw error;
+        }
+        const fileLocation = path.join(BaseFileDir, file.location, file.name);
+        res.sendFile(fileLocation);
+    } catch (error) {
+        res.status(error.statusCode || 422).json({ message: deleteFolder.fail });
+    }
+}
 
 
 exports.folderFileList = async (req, res, next) => {
@@ -115,7 +112,6 @@ exports.folderFileList = async (req, res, next) => {
             "/";
         res.send({ baseUrl, content });
     } catch (error) {
-        console.log(error);
         res.status(error.statusCode || 422).json({ message: mFolderFileList.fail });
     }
 }
@@ -131,15 +127,50 @@ exports.createFolder = async (req, res, next) => {
     }
 }
 
-exports.renameFolder = async (req, res, next) => {//TODO
+
+exports.renameFolder = async (req, res, next) => {
     const { location, oldName, newName } = req.body;
-    try {
-        const folderLocation = path.join(BaseFileDir, ...location);
-        const file = await File.find({ location: { $search: (folderLocation + "/" + oldName) } });
-        console.log(file);
-        // fs.renameSync((folderLocation + "/" + oldName), (folderLocation + "/" + newName), { recursive: true });
+
+    const result = await transaction(async () => {
+        const parentPath = path.join(...location, oldName).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const files = await File.find({ location: { $regex: new RegExp(`.*${parentPath}.*`) } });
+        for (let i = 0; i < files.length; i++) {
+            const { location: filePath, _id } = files[i];
+            let tempLocation = filePath.replace(path.join(...location, oldName), path.join(...location, newName));
+            await File.updateOne({ _id }, { location: tempLocation });
+        }
+        fs.renameSync(path.join(BaseFileDir, ...location, oldName), path.join(BaseFileDir, ...location, newName), { recursive: true });
+    });
+    if (result === true) {
         res.send({ message: mRenameFolder.ok });
-    } catch (error) {
-        res.status(error.statusCode || 422).json({ message: mRenameFolder.fail });
+    } else {
+        res.status(result.statusCode || 422).json({ message: mRenameFolder.fail });
+    }
+}
+
+exports.renameFile = async (req, res, next) => {
+    const { file_id, newName } = req.body;
+
+    const result = await transaction(async () => {
+        let file = await File.findOne({ _id: file_id });
+        if (!file) {
+            throw new Error();
+        }
+        if (fs.existsSync(path.join(BaseFileDir, file.location, newName))) {
+            throw new Error();
+        }
+        file = await File.updateOne({ _id: file_id }, { name: newName });
+        if (file.modifiedCount != 1) {
+            throw new Error();
+        }
+        fs.renameSync(path.join(BaseFileDir, file.location, file.name),
+            path.join(BaseFileDir, file.location, newName),
+            { recursive: true });
+
+    });
+    if (result === true) {
+        res.send({ message: mRenameFile.ok });
+    } else {
+        res.status(result.statusCode || 422).json({ message: mRenameFile.fail });
     }
 }

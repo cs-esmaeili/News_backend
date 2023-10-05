@@ -10,5 +10,6 @@ router.delete("/deleteFolder", file.deleteFolder);
 router.post("/folderFileList", file.folderFileList);
 router.post("/createFolder", file.createFolder);
 router.post("/renameFolder", file.renameFolder);
+router.post("/renameFile", file.renameFile);
 
 module.exports = router;

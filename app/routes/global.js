@@ -6,7 +6,7 @@ const router = new Router();
 
 router.post("/logIn", adminController.logIn);
 router.post("/register", adminController.register);
-// router.get("/file/:file_id", fileController.file);
+router.get("/file/:file_id", fileController.file);
 
 
 module.exports = router;
