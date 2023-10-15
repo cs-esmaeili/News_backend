@@ -11,7 +11,7 @@ const fileSchema = new mongoose.Schema({
         required: true,
     },
     location: {
-        type: String,
+        type: Array,
         required: true,
     },
     createdAt: {

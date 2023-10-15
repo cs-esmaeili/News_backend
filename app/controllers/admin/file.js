@@ -7,7 +7,6 @@ const { transaction } = require('../../database');
 const { mSaveFile, mDeleteFile, mDeleteFolder, mFolderFileList, mCreateFolder, mRenameFolder, mRenameFile } = require('../../../messages.json');
 const { getFilesFromFolder } = require('../../utils/file');
 
-
 exports.saveFile = async (req, res, next) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
@@ -22,7 +21,7 @@ exports.saveFile = async (req, res, next) => {
             await File.create({
                 person_id: "65281b37c6a57e8fcd6bdc6d",
                 name: newFileName,
-                location: path.join(...JSON.parse(location)),
+                location: JSON.parse(location),
             });
             fs.mkdirSync(saveFileLocation, { recursive: true });
             uploadedFile.mv(path.join(saveFileLocation, newFileName));
@@ -48,14 +47,16 @@ exports.saveFile = async (req, res, next) => {
 exports.deleteFile = async (req, res, next) => {
     const { location, fileName } = req.body;
     const result = await transaction(async () => {
-        const file = await File.findOne({ location: path.join(...location), name: fileName });
+        const file = await File.findOne({ location: { $eq: location }, name: fileName });
+
+        console.log(location, fileName);
         if (!file) {
             const error = new Error();
             error.message = { message: mDeleteFile.fail };
             error.statusCode = 422;
             throw error;
         }
-        const fileLocation = path.join(BaseFileDir, file.location, file.name);
+        const fileLocation = path.join(BaseFileDir, file.location.join(path.sep), file.name);
         fs.unlinkSync(fileLocation, { recursive: true });
         await File.deleteOne({ _id: file._id });
     });
@@ -69,7 +70,6 @@ exports.deleteFile = async (req, res, next) => {
         return (true);
     }
 }
-
 exports.deleteFolder = async (req, res, next) => {
     const { location } = req.body;
     try {
@@ -141,12 +141,29 @@ exports.renameFolder = async (req, res, next) => {
     const { location, oldName, newName } = req.body;
 
     const result = await transaction(async () => {
-        const parentPath = path.join(...location, oldName).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const files = await File.find({ location: { $regex: new RegExp(`.*${parentPath}.*`) } });
+
+        let oldLocation = [...location];
+        oldLocation.push(oldName);
+        let newLocation = [...location];
+        newLocation.push(newName);
+
+        const files = await File.find({ location: { $elemMatch: { $in: oldLocation } } });
+
         for (let i = 0; i < files.length; i++) {
-            const { location: filePath, _id } = files[i];
-            let tempLocation = filePath.replace(path.join(...location, oldName), path.join(...location, newName));
-            await File.updateOne({ _id }, { location: tempLocation });
+            const { _id } = files[i];
+            const originalArray = files[i].location;
+            const matchIndex = originalArray.findIndex((element, index) => {
+                for (let i = 0; i < oldLocation.length; i++) {
+                    if (originalArray[index + i] !== oldLocation[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            if (matchIndex !== -1) {
+                originalArray.splice(matchIndex, oldLocation.length, ...newLocation);
+            }
+            await File.updateOne({ _id }, { location: originalArray });
         }
         fs.renameSync(path.join(BaseFileDir, ...location, oldName), path.join(BaseFileDir, ...location, newName), { recursive: true });
     });
@@ -158,23 +175,24 @@ exports.renameFolder = async (req, res, next) => {
 }
 
 exports.renameFile = async (req, res, next) => {
-    const { file_id, newName } = req.body;
+    const { location, oldName, newName } = req.body;
 
     const result = await transaction(async () => {
-        let file = await File.findOne({ _id: file_id });
+        let file = await File.findOne({ location: { $all: location }, name: oldName });
         if (!file) {
             throw new Error();
         }
-        if (fs.existsSync(path.join(BaseFileDir, file.location, newName))) {
+        const oldLocation = path.join(BaseFileDir, file.location.join(), oldName);
+        const newLocation = path.join(BaseFileDir, file.location.join(), newName);
+
+        if (fs.existsSync(newLocation)) {
             throw new Error();
         }
-        file = await File.updateOne({ _id: file_id }, { name: newName });
+        file = await File.updateOne({ _id: file._id }, { name: newName });
         if (file.modifiedCount != 1) {
             throw new Error();
         }
-        fs.renameSync(path.join(BaseFileDir, file.location, file.name),
-            path.join(BaseFileDir, file.location, newName),
-            { recursive: true });
+        fs.renameSync(oldLocation, newLocation, { recursive: true });
 
     });
     if (result === true) {
