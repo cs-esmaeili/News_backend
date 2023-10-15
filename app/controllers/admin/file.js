@@ -12,21 +12,31 @@ exports.saveFile = async (req, res, next) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
+
     const { location } = req.body;
     const fileList = req.files['files[]'];
     const result = await transaction(async () => {
-        for (const fileKey in fileList) {
-            const uploadedFile = fileList[fileKey];
-            const saveFileLocation = path.join(BaseFileDir, ...JSON.parse(location));
+        const saveFileandData = async (uploadedFile) => {
+            let saveFileLocation = path.join(BaseFileDir, ...JSON.parse(location));;
             const newFileName = uuidv4() + path.extname(uploadedFile.name);
             await File.create({
-                person_id: "651c31131af835e8942ce483",
+                person_id: "65281b37c6a57e8fcd6bdc6d",
                 name: newFileName,
                 location: path.join(...JSON.parse(location)),
             });
             fs.mkdirSync(saveFileLocation, { recursive: true });
             uploadedFile.mv(path.join(saveFileLocation, newFileName));
         }
+
+        if (typeof fileList === 'object' && fileList !== null && !Array.isArray(fileList)) {
+            await saveFileandData(fileList);
+        } else {
+            for (const fileKey in fileList) {
+                const uploadedFile = fileList[fileKey];
+                await saveFileandData(uploadedFile);
+            }
+        }
+
     });
     if (result === true) {
         res.send({ message: mSaveFile.ok });
@@ -36,9 +46,9 @@ exports.saveFile = async (req, res, next) => {
 }
 
 exports.deleteFile = async (req, res, next) => {
-    const { file_id } = req.body;
+    const { location, fileName } = req.body;
     const result = await transaction(async () => {
-        const file = await File.findOne({ _id: file_id });
+        const file = await File.findOne({ location: path.join(...location), name: fileName });
         if (!file) {
             const error = new Error();
             error.message = { message: mDeleteFile.fail };
@@ -47,7 +57,7 @@ exports.deleteFile = async (req, res, next) => {
         }
         const fileLocation = path.join(BaseFileDir, file.location, file.name);
         fs.unlinkSync(fileLocation, { recursive: true });
-        await File.deleteOne({ _id: file_id });
+        await File.deleteOne({ _id: file._id });
     });
     if (res != null) {
         if (result === true) {
@@ -74,7 +84,7 @@ exports.deleteFolder = async (req, res, next) => {
         });
         const result = await File.find({ name: filesFiltered });
         for (const file of result) {
-            await this.deleteFile({ body: { file_id: file._id } }, null, null);
+            await this.deleteFile({ body: { location: file.location, fileName: file.name } }, null, null);
         }
         await fs.rmSync(folderLocation, { recursive: true });
         res.send({ message: mDeleteFolder.ok });
@@ -102,7 +112,6 @@ exports.file = async (req, res, next) => {
 
 
 exports.folderFileList = async (req, res, next) => {
-
     const { location } = req.body;
     try {
         const folderLocation = path.join(BaseFileDir, ...location);
