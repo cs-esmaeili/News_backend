@@ -14,8 +14,9 @@ const postSchema = new mongoose.Schema({
         type: mongoose.ObjectId,
         required: true,
     },
-    permissionGp_id: {
-        type: mongoose.ObjectId,
+    visibel: {
+        type: Boolean,
+        default: 0,
         required: true,
     },
     body: [{}],

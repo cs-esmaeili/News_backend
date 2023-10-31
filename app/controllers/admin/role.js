@@ -1,4 +1,4 @@
-const PermissionGp = require('../../database/models/PermissionGp');
+const Role = require('../../database/models/Role');
 const User = require('../../database/models/User');
 const mongoose = require('mongoose');
 const { transaction } = require('../../database');
@@ -8,7 +8,7 @@ exports.createPermissionGp = async (req, res, next) => {
     try {
         const { name, permissions } = req.body;
         const convertedPermissions = permissions.map(id => new mongoose.Types.ObjectId(id));
-        const result = await PermissionGp.create({
+        const result = await Role.create({
             name,
             permissions: convertedPermissions,
         });
@@ -27,7 +27,7 @@ exports.deletePermissionGp = async (req, res, next) => {
     try {
         const { permissionGp_id, newPermissionGp_id } = req.body;
         const result = transaction(async () => {
-            const deletedResult = await PermissionGp.deleteOne({ _id: permissionGp_id });
+            const deletedResult = await Role.deleteOne({ _id: permissionGp_id });
             if (deletedResult.deletedCount == 0) {
                 const error = new Error();
                 error.message = "permissionGp_id for delete notFound !";
@@ -54,7 +54,7 @@ exports.deletePermissionGp = async (req, res, next) => {
 exports.updatePermissionGp = async (req, res, next) => {
     try {
         const { permissionGp_id, name, permissions } = req.body;
-        const updateResult = await PermissionGp.updateOne({ _id: permissionGp_id }, { name, permissions });
+        const updateResult = await Role.updateOne({ _id: permissionGp_id }, { name, permissions });
         if (updateResult.modifiedCount == 1) {
             res.send({ status: "ok", message: mUpdatePermissionGp.ok });
             return;

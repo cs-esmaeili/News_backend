@@ -1,6 +1,6 @@
 const { createToken } = require("../../utils/token");
 const User = require("../../database/models/User");
-const PermissionGp = require("../../database/models/PermissionGp");
+const Role = require("../../database/models/Role");
 const bcrypt = require('bcryptjs');
 const { mlogIn, mRegister } = require('../../../messages.json');
 
@@ -41,8 +41,8 @@ exports.register = async (req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
-        let permissionGp = await PermissionGp.findOne({ _id: permissionGp_id });
-        if (!permissionGp) {
+        let Role = await Role.findOne({ _id: permissionGp_id });
+        if (!Role) {
             const error = new Error();
             error.message = { message: mRegister.fail_2 };
             error.statusCode = 422;

@@ -1,4 +1,4 @@
-const PermissionGp = require('../models/PermissionGp');
+const Role = require('../models/Role');
 const Category = require('../models/Category');
 const User = require('../models/User');
 const Post = require('../models/Post');
@@ -7,7 +7,7 @@ const { green, red } = require('colors');
 
 const seqNumber = 5;
 const seed = async (app) => {
-    const gp = (await PermissionGp.find({}))[0];
+    const gp = (await Role.find({}))[0];
     const categorys = await Category.find({});
     const user = (await User.find({}))[0];
 

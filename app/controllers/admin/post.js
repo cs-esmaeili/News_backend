@@ -9,7 +9,6 @@ exports.createPost = async (req, res, next) => {
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
-            permissionGp_id: new mongoose.Types.ObjectId(permissionGp_id),
             body,
             views: 0,
             auther,
@@ -41,12 +40,12 @@ exports.deletePost = async (req, res, next) => {
 }
 exports.updatePost = async (req, res, next) => {
     try {
-        const { post_id, title, disc, category_id, permissionGp_id, body, auther } = req.body;
+        const { post_id, title, disc, category_id, visibel, body, auther } = req.body;
         const updateResult = await Post.updateOne({ _id: post_id }, {
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
-            permissionGp_id: new mongoose.Types.ObjectId(permissionGp_id),
+            visibel,
             body,
             views: 0,
             auther,

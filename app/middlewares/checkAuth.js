@@ -1,7 +1,7 @@
 const { extractBearer } = require('./../utils/bearer');
 const User = require('./../database/models/User');
 const Token = require('./../database/models/Token');
-const PermissionGp = require('./../database/models/PermissionGp');
+const Role = require('./../database/models/Role');
 const Permission = require('./../database/models/Permission');
 
 
@@ -18,8 +18,8 @@ exports.checkRoutePermission = async (req, res, next) => {
                 return;
             }
             const user = await User.findOne({ token_id: tokenObject._id });
-            const permissionGp = (await PermissionGp.findOne({ _id: user.permissionGp_id })).permissions;
-            const permission = await Permission.find({ _id: { $in: permissionGp }, route: currentRoute });
+            const Role = (await Role.findOne({ _id: user.permissionGp_id })).permissions;
+            const permission = await Permission.find({ _id: { $in: Role }, route: currentRoute });
             if (permission.length === 0) {
                 res.status(403).json({ error: 'Access denied: Insufficient permissions' });
                 return;

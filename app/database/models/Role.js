@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-
-const permissionGpSchema = new mongoose.Schema({
+const roleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -20,4 +19,4 @@ const permissionGpSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("PermissionGp", permissionGpSchema, 'permissionGp');
+module.exports = mongoose.model("Role", roleSchema, 'Role');

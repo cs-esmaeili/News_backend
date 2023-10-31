@@ -1,4 +1,4 @@
-const PermissionGp = require('../models/PermissionGp');
+const Role = require('../models/Role');
 const Permission = require('../models/Permission');
 const { green, red } = require('colors');
 
@@ -13,10 +13,10 @@ const seed = async () => {
         permissionIds.push(id);
     }
 
-    await PermissionGp.create({ name: 'admin', permissions: permissionIds });
-    await PermissionGp.create({ name: 'user', permissions: permissionIds });
+    await Role.create({ name: 'admin', permissions: permissionIds });
+    await Role.create({ name: 'user', permissions: permissionIds });
 
-    await console.log(`${red(seqNumber)} : ${green('PermissionGp seed done')}`);
+    await console.log(`${red(seqNumber)} : ${green('Role seed done')}`);
 }
 
 module.exports = {
