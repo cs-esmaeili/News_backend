@@ -176,9 +176,14 @@ exports.renameFolder = async (req, res, next) => {
 
 exports.renameFile = async (req, res, next) => {
     const { location, oldName, newName } = req.body;
-
+    console.log(location, oldName, newName);
     const result = await transaction(async () => {
-        let file = await File.findOne({ location: { $all: location }, name: oldName });
+        let file = await File.findOne({
+            $or: [
+                { location: { $all: location }, name: oldName },
+                { location }
+            ]
+        });
         if (!file) {
             throw new Error();
         }
