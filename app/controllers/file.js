@@ -1,11 +1,11 @@
-const File = require("../../database/models/File");
+const File = require("../database/models/File");
 const path = require('path');
 const fs = require('fs');
 const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 const { v4: uuidv4 } = require('uuid');
-const { transaction } = require('../../database');
-const { mSaveFile, mDeleteFile, mDeleteFolder, mFolderFileList, mCreateFolder, mRenameFolder, mRenameFile } = require('../../../messages.json');
-const { getFilesFromFolder } = require('../../utils/file');
+const { transaction } = require('../database');
+const { mSaveFile, mDeleteFile, mDeleteFolder, mFolderFileList, mCreateFolder, mRenameFolder, mRenameFile } = require('../../messages.json');
+const { getFilesFromFolder } = require('../utils/file');
 
 exports.saveFile = async (req, res, next) => {
     if (!req.files || Object.keys(req.files).length === 0) {

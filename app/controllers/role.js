@@ -1,8 +1,8 @@
-const Role = require('../../database/models/Role');
-const User = require('../../database/models/User');
+const Role = require('../database/models/Role');
+const User = require('../database/models/User');
 const mongoose = require('mongoose');
-const { transaction } = require('../../database');
-const { mCreatePermissionGp, mUpdatePermissionGp, mDeletePermissionGp } = require('../../../messages.json');
+const { transaction } = require('../database');
+const { mCreatePermissionGp, mUpdatePermissionGp, mDeletePermissionGp } = require('../../messages.json');
 
 exports.createPermissionGp = async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-const role = require("../../controllers/admin/role");
+const role = require("../controllers/role");
 
 const router = new Router();
 
