@@ -23,7 +23,7 @@ exports.createCategory = async (req, res, next) => {
 exports.categoryList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
-        const categorys = await Category.find({}).select('_id name updatedAt').skip((page - 1) * perPage).limit(perPage);
+        const categorys = await Category.find({}).select('_id name image updatedAt').skip((page - 1) * perPage).limit(perPage);
         const categorysCount = await Category.countDocuments({});
         res.send({ categorysCount, categorys });
     } catch (err) {
@@ -52,8 +52,8 @@ exports.deleteCategory = async (req, res, next) => {
 
 exports.updateCategory = async (req, res, next) => {
     try {
-        const { category_id, name } = req.body;
-        const updateResult = await Category.updateOne({ _id: category_id }, { name });
+        const { category_id, name, image } = req.body;
+        const updateResult = await Category.updateOne({ _id: category_id }, { name, image });
         if (updateResult.modifiedCount == 1) {
             res.send({ status: "ok", message: mUpdateCategory.ok });
             return;
