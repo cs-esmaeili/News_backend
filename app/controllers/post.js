@@ -4,14 +4,17 @@ const { mCreatePost, mDeletePost, mUpdatePost } = require('../../messages.json')
 
 exports.createPost = async (req, res, next) => {
     try {
-        const { title, disc, category_id, body, auther } = req.body;
+        const { title, disc, category_id, body } = req.body;
+
+        console.log(req.body.user);
+        //TODO auther bayad as object user ke to middleware set mishe astefade kone
         const result = await Post.create({
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
             body,
             views: 0,
-            auther,
+            auther: req.body.user._id,
         });
         if (result) {
             res.send({ message: mCreatePost.ok });

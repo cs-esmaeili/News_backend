@@ -18,8 +18,8 @@ exports.checkRoutePermission = async (req, res, next) => {
                 return;
             }
             const user = await User.findOne({ token_id: tokenObject._id });
-            const Role = (await Role.findOne({ _id: user.permissionGp_id })).permissions;
-            const permission = await Permission.find({ _id: { $in: Role }, route: currentRoute });
+            const permissions = (await Role.findOne({ _id: user.permissionGp_id })).permissions;
+            const permission = await Permission.find({ _id: { $in: permissions }, route: currentRoute });
             if (permission.length === 0) {
                 res.status(403).json({ error: 'Access denied: Insufficient permissions' });
                 return;
