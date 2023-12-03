@@ -13,6 +13,7 @@ const postSchema = new mongoose.Schema({
     category_id: {
         type: mongoose.ObjectId,
         required: true,
+        ref: 'Category',
     },
     visibel: {
         type: Boolean,

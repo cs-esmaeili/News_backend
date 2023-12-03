@@ -20,8 +20,11 @@ const seed = async (app) => {
             permissionGp_id: gp._id,
             views: i,
             auther: user._id,
-            body: [{ text: "Consectetur excepteur ex aliquip dolor dolor ex pariatur Lorem sit et Lorem officia consectetur. Adipisicing fugiat laborum sunt minim aliquip ea irure nisi deserunt ut. Nisi tempor ea cillum ut nostrud id id aute. Dolore est nisi amet nostrud non fugiat aliquip ipsum nulla consectetur. Amet reprehenderit occaecat veniam dolor aliqua adipisicing. Elit ipsum anim labore ipsum velit in elit non ex nulla non veniam incididunt ex." },
-            { videoUrl: "test" }]
+            body: [
+                [{ type: "text", content: "this is text 1" }, { type: "text", content: "this is text 2" }],
+                [{ type: "text", content: "this is text 3" }, { type: "text", content: "this is text 4" }],
+                [{ type: "text", content: "this is text 5" }]
+            ]
         });
     }
     await console.log(`${red(seqNumber)} : ${green('Permission seed done')}`);

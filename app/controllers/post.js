@@ -5,16 +5,14 @@ const { mCreatePost, mDeletePost, mUpdatePost } = require('../../messages.json')
 exports.createPost = async (req, res, next) => {
     try {
         const { title, disc, category_id, body } = req.body;
-
-        console.log(req.body.user);
-        //TODO auther bayad as object user ke to middleware set mishe astefade kone
         const result = await Post.create({
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
             body,
             views: 0,
-            auther: req.body.user._id,
+            auther: "656b50a17ea7d8a6e27f00e9",
+            // auther: req.body.user._id,
         });
         if (result) {
             res.send({ message: mCreatePost.ok });
@@ -43,15 +41,14 @@ exports.deletePost = async (req, res, next) => {
 }
 exports.updatePost = async (req, res, next) => {
     try {
-        const { post_id, title, disc, category_id, visibel, body, auther } = req.body;
+        const { post_id, title, disc, category_id, body } = req.body;
         const updateResult = await Post.updateOne({ _id: post_id }, {
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
-            visibel,
             body,
             views: 0,
-            auther,
+            auther: "656b50a17ea7d8a6e27f00e9",
         });
         if (updateResult.modifiedCount == 1) {
             res.send({ message: mUpdatePost.ok });
@@ -69,8 +66,9 @@ exports.updatePost = async (req, res, next) => {
 exports.postList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
-        const posts = await Post.find({}).skip((page - 1) * perPage).limit(perPage);
-        res.send({ status: "ok", posts });
+        const posts = await Post.find({}).populate('category_id').skip((page - 1) * perPage).limit(perPage);
+        const postsCount = await Post.countDocuments({});
+        res.send({ postsCount, posts });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }

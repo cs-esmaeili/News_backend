@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 app.post("/logIn", adminController.logIn);
 app.post("/register", adminController.register);
 app.get("/file/:file_id", fileController.file);
-app.use(checkRoutePermission);
+// app.use(checkRoutePermission);
 app.use("/role", role);
 app.use("/category", category);
 app.use("/post", post);
