@@ -33,7 +33,7 @@ exports.logIn = async (req, res, next) => {
 exports.register = async (req, res, next) => {
     try {
         await User.registerValidation(req.body);
-        const { userName, passWord, permissionGp_id } = await req.body;
+        const { userName, passWord, role_id } = await req.body;
         let user = await User.findOne({ userName });
         if (user) {
             const error = new Error();
@@ -41,7 +41,7 @@ exports.register = async (req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
-        let Role = await Role.findOne({ _id: permissionGp_id });
+        let Role = await Role.findOne({ _id: role_id });
         if (!Role) {
             const error = new Error();
             error.message = { message: mRegister.fail_2 };
@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
             token_id: token._id,
             userName,
             passWord: await bcrypt.hash(passWord, 10),
-            permissionGp_id
+            role_id
         });
         res.json(result);
     } catch (err) {

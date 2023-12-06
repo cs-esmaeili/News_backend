@@ -1,10 +1,21 @@
 const Role = require('../database/models/Role');
+const Permission = require('../database/models/Permission');
 const User = require('../database/models/User');
 const mongoose = require('mongoose');
 const { transaction } = require('../database');
-const { mCreatePermissionGp, mUpdatePermissionGp, mDeletePermissionGp } = require('../../messages.json');
+const { mCreateRole, mUpdateRole, mDeleteRole } = require('../../messages.json');
 
-exports.createPermissionGp = async (req, res, next) => {
+exports.roleList = async (req, res, next) => {
+    try {
+        const permissions = await Permission.find({});
+        const roles = await Role.find({}).populate('permissions');
+        res.send({ roles, permissions });
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+
+exports.createRole = async (req, res, next) => {
     try {
         const { name, permissions } = req.body;
         const convertedPermissions = permissions.map(id => new mongoose.Types.ObjectId(id));
@@ -13,54 +24,54 @@ exports.createPermissionGp = async (req, res, next) => {
             permissions: convertedPermissions,
         });
         if (result) {
-            res.send({ message: mCreatePermissionGp.ok });
+            res.send({ message: mCreateRole.ok });
             return;
         }
         const error = new Error();
-        error.message = { message: mCreatePermissionGp.fail };
+        error.message = { message: mCreateRole.fail };
         throw error;
     } catch (err) {
         res.status(err.statusCode || 422).json(err.message);
     }
 }
-exports.deletePermissionGp = async (req, res, next) => {
+exports.deleteRole = async (req, res, next) => {
     try {
-        const { permissionGp_id, newPermissionGp_id } = req.body;
+        const { role_id, newRole_id } = req.body;
         const result = transaction(async () => {
-            const deletedResult = await Role.deleteOne({ _id: permissionGp_id });
+            const deletedResult = await Role.deleteOne({ _id: role_id });
             if (deletedResult.deletedCount == 0) {
                 const error = new Error();
-                error.message = "permissionGp_id for delete notFound !";
+                error.message = "role_id for delete notFound !";
                 throw error;
             }
-            const updateResult = await User.updateMany({ permissionGp_id }, { permissionGp_id: newPermissionGp_id });
+            const updateResult = await User.updateMany({ role_id }, { role_id: newRole_id });
             if (updateResult.modifiedCount == 0) {
                 const error = new Error();
-                error.message = "newPermissionGp_id for update notFound !";
+                error.message = "newRole_id for update notFound !";
                 throw error;
             }
         });
         if (result) {
-            res.send({ message: mDeletePermissionGp.ok });
+            res.send({ message: mDeleteRole.ok });
             return;
         }
         const error = new Error();
-        error.message = { message: mDeletePermissionGp.fail };
+        error.message = { message: mDeleteRole.fail };
         throw error;
     } catch (err) {
         res.status(err.statusCode || 422).json(err.message);
     }
 }
-exports.updatePermissionGp = async (req, res, next) => {
+exports.updateRole = async (req, res, next) => {
     try {
-        const { permissionGp_id, name, permissions } = req.body;
-        const updateResult = await Role.updateOne({ _id: permissionGp_id }, { name, permissions });
+        const { role_id, name, permissions } = req.body;
+        const updateResult = await Role.updateOne({ _id: role_id }, { name, permissions });
         if (updateResult.modifiedCount == 1) {
-            res.send({ status: "ok", message: mUpdatePermissionGp.ok });
+            res.send({ status: "ok", message: mUpdateRole.ok });
             return;
         }
         const error = new Error();
-        error.message = { message: mUpdatePermissionGp.fail };
+        error.message = { message: mUpdateRole.fail };
         throw error;
     } catch (err) {
         res.status(err.statusCode || 422).json(err.message);

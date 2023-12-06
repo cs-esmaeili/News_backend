@@ -11,7 +11,7 @@
         "fail_1": "حساب کاربری وجود دارد",
         "fail_2": "گروه دسترسی وجود ندارد"
     },
-    "mCreatePermissionGp": {
+    "mCreateRole": {
         "ok": "دسته بندی ساخته شد",
         "fail": "دسته بندی ساخته نشد"
     },
@@ -27,11 +27,11 @@
         "ok": "دسته بندی بروز شد",
         "fail": "دسته بندی بروز نشد"
     },
-    "mDeletePermissionGp": {
+    "mDeleteRole": {
         "ok": "دسته بندی حذف شد",
         "fail": "دسته بندی حذف نشد"
     },
-    "mUpdatePermissionGp": {
+    "mUpdateRole": {
         "ok": "دسته بندی بروز شد",
         "fail": "دسته بندی بروز نشد"
     },

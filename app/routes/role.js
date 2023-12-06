@@ -4,8 +4,9 @@ const role = require("../controllers/role");
 
 const router = new Router();
 
-router.post("/createPermissionGp", role.createPermissionGp);
-router.post("/deletePermissionGp", role.deletePermissionGp);
-router.post("/updatePermissionGp", role.updatePermissionGp);
+router.post("/roleList", role.roleList);
+router.post("/createRole", role.createRole);
+router.post("/deleteRole", role.deleteRole);
+router.post("/updateRole", role.updateRole);
 
 module.exports = router;

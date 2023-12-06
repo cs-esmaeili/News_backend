@@ -16,6 +16,6 @@ exports.registerSchema  = Yup.object().shape({
         .min(4)
         .max(255)
         .required(),
-    permissionGp_id: Yup.string()
+    role_id: Yup.string()
         .required(),
 });

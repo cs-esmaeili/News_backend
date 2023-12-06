@@ -8,7 +8,7 @@ const seed = async (app) => {
     const availableRoutes = expressListEndpoints(app);
     for (const key in availableRoutes) {
         const path = availableRoutes[key].path;
-        await Permission.create({ name: 'SomeRoute', route: path });
+        await Permission.create({ name: path, route: path, disc: "disc" });
     }
 
     await console.log(`${red(seqNumber)} : ${green('Permission seed done')}`);

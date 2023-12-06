@@ -17,7 +17,6 @@ const seed = async (app) => {
             title: 'Some post ' + i,
             disc: "Velit et velit exercitation deserunt duis ut culpa incididunt excepteur aute.",
             category_id: category._id,
-            permissionGp_id: gp._id,
             views: i,
             auther: user._id,
             body: [

@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    permissionGp_id: {
+    role_id: {
         type: mongoose.ObjectId,
         required: true,
     },

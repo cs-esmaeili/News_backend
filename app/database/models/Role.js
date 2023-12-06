@@ -8,6 +8,7 @@ const roleSchema = new mongoose.Schema({
     permissions: {
         type: Array,
         required: true,
+        ref: 'Permission',
     },
     createdAt: {
         type: Date,

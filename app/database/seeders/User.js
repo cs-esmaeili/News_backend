@@ -12,7 +12,7 @@ const seed = async (app) => {
         token_id: result._id,
         userName: process.env.ADMIN_USERNAME,
         passWord: await bcrypt.hash(process.env.ADMIN_PASSWORD, 10),
-        permissionGp_id: role[0]._id
+        role_id: role[0]._id
     });
     await console.log(`${red(seqNumber)} : ${green('User seed done')}`);
 }

@@ -10,6 +10,9 @@ const permissionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    disc: {
+        type: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
