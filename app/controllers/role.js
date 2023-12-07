@@ -17,11 +17,11 @@ exports.roleList = async (req, res, next) => {
 
 exports.createRole = async (req, res, next) => {
     try {
-        const { name, permissions } = req.body;
-        const convertedPermissions = permissions.map(id => new mongoose.Types.ObjectId(id));
+        const { name } = req.body;
+        const permissions = await Permission.find({}).select('id');
         const result = await Role.create({
             name,
-            permissions: convertedPermissions,
+            permissions,
         });
         if (result) {
             res.send({ message: mCreateRole.ok });
@@ -34,6 +34,7 @@ exports.createRole = async (req, res, next) => {
         res.status(err.statusCode || 422).json(err.message);
     }
 }
+
 exports.deleteRole = async (req, res, next) => {
     try {
         const { role_id, newRole_id } = req.body;
@@ -44,12 +45,7 @@ exports.deleteRole = async (req, res, next) => {
                 error.message = "role_id for delete notFound !";
                 throw error;
             }
-            const updateResult = await User.updateMany({ role_id }, { role_id: newRole_id });
-            if (updateResult.modifiedCount == 0) {
-                const error = new Error();
-                error.message = "newRole_id for update notFound !";
-                throw error;
-            }
+            await User.updateMany({ role_id }, { role_id: newRole_id });
         });
         if (result) {
             res.send({ message: mDeleteRole.ok });
