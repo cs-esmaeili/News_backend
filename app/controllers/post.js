@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Post = require('../database/models/Post');
-const { mCreatePost, mDeletePost, mUpdatePost } = require('../../messages.json');
-
+const { mCreatePost, mDeletePost, mUpdatePost } = require('../messages/response.json');
 exports.createPost = async (req, res, next) => {
     try {
         const { title, disc, category_id, body } = req.body;

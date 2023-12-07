@@ -2,7 +2,7 @@ const { createToken } = require("../utils/token");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
 const bcrypt = require('bcryptjs');
-const { mlogIn, mRegister } = require('../../messages.json');
+const { mlogIn, mRegister } =  require('../messages/response.json');
 
 exports.logIn = async (req, res, next) => {
     try {

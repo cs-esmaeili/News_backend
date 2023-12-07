@@ -11,6 +11,7 @@ const category = require("./app/routes/category");
 const file = require("./app/routes/file");
 const post = require("./app/routes/post");
 const role = require("./app/routes/role");
+const permission = require("./app/routes/permission");
 
 const { checkRoutePermission } = require("./app/middlewares/checkAuth");
 
@@ -39,6 +40,7 @@ app.post("/register", adminController.register);
 app.get("/file/:file_id", fileController.file);
 // app.use(checkRoutePermission);
 app.use("/role", role);
+app.use("/permission", permission);
 app.use("/category", category);
 app.use("/post", post);
 app.use("/file", file);
