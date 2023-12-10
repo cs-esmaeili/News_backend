@@ -21,8 +21,10 @@ const migration = async () => {
       return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
     })
     .forEach(file => {
-      const model = require(path.join(__dirname, file));
-      models.push(model);
+      if (file != "baseSchema.js") {
+        const model = require(path.join(__dirname, file));
+        models.push(model);
+      }
     });
   if (process.env.NODE_ENV === "development" && process.argv.includes('data')) {
     models.map(async (value) => {

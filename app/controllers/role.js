@@ -9,6 +9,7 @@ exports.roleList = async (req, res, next) => {
     try {
         const permissions = await Permission.find({});
         const roles = await Role.find({}).populate('permissions');
+        console.log(roles);
         res.send({ roles, permissions });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

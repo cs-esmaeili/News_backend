@@ -1,19 +1,20 @@
 const mongoose = require("mongoose");
+const { schemaMaker } = require('./baseSchema');
 
-const tokenSchema = new mongoose.Schema({
-    token: {
-        type: String,
-        required: true,
-        max: 255,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
-
-module.exports = mongoose.model("Token", tokenSchema , 'token');
+module.exports = mongoose.model("Token", schemaMaker(
+    {
+        token: {
+            type: String,
+            required: true,
+            max: 255,
+        },
+        createdAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: Date.now,
+        },
+        updatedAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: Date.now,
+        },
+    }
+), 'token');

@@ -1,26 +1,26 @@
 const mongoose = require("mongoose");
+const { schemaMaker } = require('./baseSchema');
 
-
-const permissionSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    route: {
-        type: String,
-        required: true,
-    },
-    disc: {
-        type: String,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
-
-module.exports = mongoose.model("Permission", permissionSchema, 'permission');
+module.exports = mongoose.model("Permission", schemaMaker(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        route: {
+            type: String,
+            required: true,
+        },
+        disc: {
+            type: String,
+        },
+        createdAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: Date.now,
+        },
+        updatedAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: Date.now,
+        },
+    }
+), 'permission');
