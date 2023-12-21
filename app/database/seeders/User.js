@@ -10,8 +10,7 @@ const seed = async (app) => {
     const result = await createToken(process.env.ADMIN_USERNAME);
     await User.create({
         token_id: result._id,
-        userName: process.env.ADMIN_USERNAME,
-        passWord: await bcrypt.hash(process.env.ADMIN_PASSWORD, 10),
+        username: process.env.ADMIN_USERNAME,
         role_id: role[0]._id
     });
     await console.log(`${red(seqNumber)} : ${green('User seed done')}`);

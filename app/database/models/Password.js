@@ -1,18 +1,27 @@
 const mongoose = require("mongoose");
 const { schemaMaker } = require('./baseSchema');
 
-module.exports = mongoose.model("Permission", schemaMaker(
+module.exports = mongoose.model("Password", schemaMaker(
     {
-        name: {
+        password: {
             type: String,
             required: true,
         },
-        route: {
+        username: {
+            type: String,
+            required: function () {
+                return !this.user_id; 
+            }
+        },
+        user_id: {
+            type: String,
+            required: function () {
+                return !this.username; 
+            }
+        },
+        use: {
             type: String,
             required: true,
-        },
-        disc: {
-            type: String,
         },
         createdAt: {
             type: mongoose.Schema.Types.Mixed,
@@ -23,4 +32,4 @@ module.exports = mongoose.model("Permission", schemaMaker(
             default: Date.now,
         },
     }
-), 'Permission');
+), 'Password');

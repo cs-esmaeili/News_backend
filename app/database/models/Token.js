@@ -17,4 +17,4 @@ module.exports = mongoose.model("Token", schemaMaker(
             default: Date.now,
         },
     }
-), 'token');
+), 'Token');

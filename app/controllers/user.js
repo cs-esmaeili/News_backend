@@ -2,7 +2,7 @@ const { createToken } = require("../utils/token");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
 const bcrypt = require('bcryptjs');
-const { mlogIn, mRegister } =  require('../messages/response.json');
+const { mlogIn, mRegister } = require('../messages/response.json');
 
 exports.logIn = async (req, res, next) => {
     try {
@@ -55,6 +55,34 @@ exports.register = async (req, res, next) => {
             userName,
             passWord: await bcrypt.hash(passWord, 10),
             role_id
+        });
+        res.json(result);
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.message);
+    }
+}
+
+exports.registerPure = async (req, res, next) => {
+    try {
+        const { username, role_id, data } = await req.body;
+        let user = await User.findOne({ username });
+        if (user) {
+            const error = new Error();
+            error.message = { message: mRegister.fail_1 };
+            error.statusCode = 422;
+            throw error;
+        }
+        let role = await Role.findOne({ _id: role_id });
+        if (!role) {
+            const error = new Error();
+            error.message = { message: mRegister.fail_2 };
+            error.statusCode = 422;
+            throw error;
+        }
+        const result = await User.create({
+            username,
+            role_id,
+            data
         });
         res.json(result);
     } catch (err) {

@@ -40,4 +40,4 @@ module.exports = mongoose.model("Post", schemaMaker(
             default: Date.now,
         },
     }
-), 'post');
+), 'Post');

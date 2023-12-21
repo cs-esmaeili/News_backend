@@ -4,14 +4,14 @@ const momentZone = require('moment-timezone');
 
 exports.schemaMaker = (object) => {
 
-    let tempSchema = object;
-    if (object.hasOwnProperty('createdAt')) {
-        tempSchema = { ...object, createdAt: mongoose.Schema.Types.Mixed }
-    }
     const schema = new mongoose.Schema(object);
 
     const changeDoc = (doc) => {
 
+        if(doc == null){
+            return null;
+        }
+        
         function isObject(variable) {
             return (variable !== null && typeof variable === 'object');
         }

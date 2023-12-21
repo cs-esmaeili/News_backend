@@ -9,17 +9,12 @@ const userSchema = schemaMaker(
         token_id: {
             type: mongoose.ObjectId
         },
-        userName: {
-            type: Number,
+        username: {
+            type: String,
             required: true,
             unique: true,
-        },
-        passWord: {
-            type: String,
-            max: 50,
-            min: 4,
-            required: true,
-            trim: true,
+            max: 11,
+            min: 11,
         },
         role_id: {
             type: mongoose.ObjectId,
@@ -27,11 +22,10 @@ const userSchema = schemaMaker(
         },
         data: {
             image: String,
-            card_number: String,
-            national_code: String,
-            birthday: Date,
-            full_name: String,
-            sheba_number: String,
+            fullName: String,
+            nationalCode: String,
+            birthday: mongoose.Schema.Types.Mixed,
+            shebaNumber: String,
         },
         createdAt: {
             type: mongoose.Schema.Types.Mixed,
@@ -50,4 +44,4 @@ userSchema.statics.registerValidation = function (body) {
     return registerSchema.validate(body, { abortEarly: false });
 };
 
-module.exports = mongoose.model("User", userSchema, 'user');
+module.exports = mongoose.model("User", userSchema, 'User');
