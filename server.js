@@ -5,7 +5,6 @@ const fileUpload = require("express-fileupload");
 const express = require("express");
 const mongoose = require("mongoose");
 const { connect } = require('./app/database');
-const fileController = require("./app/controllers/file");
 const category = require("./app/routes/category");
 const file = require("./app/routes/file");
 const post = require("./app/routes/post");
@@ -35,7 +34,6 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 //* Routes
 
-app.get("/file/:file_id", fileController.file);
 // app.use(checkRoutePermission);
 app.use("/user", user);
 app.use("/role", role);
