@@ -1,6 +1,9 @@
-const { transaction } = require('../database');
+const path = require('path');
+const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 const Category = require('../database/models/Category');
+const { getLocalPathFromUrl } = require('../utils/file');
 const Post = require('../database/models/Post');
+const { getBase64 } = require('@plaiceholder/base64');
 const { mCreateCategory, mDeleteCategory, mUpdateCategory } = require('../messages/response.json');
 
 exports.createCategory = async (req, res, next) => {
@@ -23,8 +26,14 @@ exports.createCategory = async (req, res, next) => {
 exports.categoryList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
-        const categorys = await Category.find({}).select('_id name image updatedAt').skip((page - 1) * perPage).limit(perPage);
+        let categorys = await Category.find({}).select('_id name image updatedAt').skip((page - 1) * perPage).limit(perPage).lean();
+        for (let category of categorys) {
+            const localPath = getLocalPathFromUrl(category.image);
+            const hash = await getBase64(localPath);
+            category.image = { url: category.image, blurHash: hash }
+        }
         const categorysCount = await Category.countDocuments({});
+        console.log(categorys);
         res.send({ categorysCount, categorys });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

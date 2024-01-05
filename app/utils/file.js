@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const sizeOf = require('image-size');
 const { getBase64 } = require('@plaiceholder/base64');
+const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 
 const isImage = (filePath) => {
     if (!fs.existsSync(filePath)) {
@@ -42,5 +43,18 @@ exports.getFilesFromFolder = async (folderPath) => {
 
     }
 
-    return  files ;
+    return files;
 };
+
+exports.getLocalPathFromUrl = (url) => {
+    try {
+        let localPath = url.replace(process.env.BASE_URL
+            + JSON.parse(process.env.STORAGE_LOCATION)[2] + "/", "").split('/');
+        localPath = path.join(localPath.join(path.sep));
+        localPath = BaseFileDir + path.sep + localPath;
+        return localPath;
+    } catch (error) {
+        console.log(error);
+    }
+
+}
