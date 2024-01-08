@@ -33,7 +33,6 @@ exports.categoryList = async (req, res, next) => {
             category.image = { url: category.image, blurHash: hash }
         }
         const categorysCount = await Category.countDocuments({});
-        console.log(categorys);
         res.send({ categorysCount, categorys });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

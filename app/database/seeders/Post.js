@@ -11,7 +11,7 @@ const seed = async (app) => {
     const categorys = await Category.find({});
     const user = (await User.find({}))[0];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 90; i++) {
         const category = categorys[(Math.floor(Math.random() * categorys.length))];
         await Post.create({
             title: 'Some post ' + i,
@@ -19,10 +19,11 @@ const seed = async (app) => {
             category_id: category._id,
             views: i,
             auther: user._id,
+            metaTags: ['haha' , "kda"],
             body: [
-                [{ type: "text", content: "this is text 1" }, { type: "text", content: "this is text 2" }],
-                [{ type: "text", content: "this is text 3" }, { type: "text", content: "this is text 4" }],
-                [{ type: "text", content: "this is text 5" }]
+                [{ type: "Text", content: "this is Text 1" }, { type: "Text", content: "this is Text 2" }],
+                [{ type: "Text", content: "this is Text 3" }, { type: "Text", content: "this is Text 4" }],
+                [{ type: "Text", content: "this is Text 5" }]
             ]
         });
     }

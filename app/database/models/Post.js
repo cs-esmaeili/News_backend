@@ -6,9 +6,14 @@ module.exports = mongoose.model("Post", schemaMaker(
         title: {
             type: String,
             required: true,
+            unique: true
         },
         disc: {
             type: String,
+            required: true,
+        },
+        metaTags: {
+            type: Array,
             required: true,
         },
         category_id: {
