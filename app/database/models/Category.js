@@ -8,8 +8,8 @@ module.exports = mongoose.model("Category", schemaMaker(
             required: true,
         },
         image: {
-            type: String,
-            required: true,
+            url: String,
+            blurHash: String
         },
         createdAt: {
             type: mongoose.Schema.Types.Mixed,

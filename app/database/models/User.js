@@ -9,7 +9,7 @@ const userSchema = schemaMaker(
         token_id: {
             type: mongoose.ObjectId
         },
-        username: {
+        userName: {
             type: String,
             required: true,
             unique: true,
@@ -21,7 +21,10 @@ const userSchema = schemaMaker(
             required: true,
         },
         data: {
-            image: String,
+            image: {
+                url: String,
+                blurHash: String
+            },
             fullName: String,
             nationalCode: String,
             birthday: mongoose.Schema.Types.Mixed,

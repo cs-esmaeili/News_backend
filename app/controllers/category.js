@@ -27,11 +27,6 @@ exports.categoryList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
         let categorys = await Category.find({}).select('_id name image updatedAt').skip((page - 1) * perPage).limit(perPage).lean();
-        for (let category of categorys) {
-            const localPath = getLocalPathFromUrl(category.image);
-            const hash = await getBase64(localPath);
-            category.image = { url: category.image, blurHash: hash }
-        }
         const categorysCount = await Category.countDocuments({});
         res.send({ categorysCount, categorys });
     } catch (err) {

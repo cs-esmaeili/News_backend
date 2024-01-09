@@ -2,7 +2,7 @@ const { createToken } = require("../utils/token");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
 const bcrypt = require('bcryptjs');
-const { mlogIn, mRegister } = require('../messages/response.json');
+const { mlogIn, mRegister, registerPure } = require('../messages/response.json');
 
 exports.logIn = async (req, res, next) => {
     try {
@@ -64,27 +64,27 @@ exports.register = async (req, res, next) => {
 
 exports.registerPure = async (req, res, next) => {
     try {
-        const { username, role_id, data } = await req.body;
-        let user = await User.findOne({ username });
+        const { userName, role_id, data } = await req.body;
+        let user = await User.findOne({ userName });
         if (user) {
             const error = new Error();
-            error.message = { message: mRegister.fail_1 };
+            error.message = { message: registerPure.fail_1 };
             error.statusCode = 422;
             throw error;
         }
         let role = await Role.findOne({ _id: role_id });
         if (!role) {
             const error = new Error();
-            error.message = { message: mRegister.fail_2 };
+            error.message = { message: registerPure.fail_2 };
             error.statusCode = 422;
             throw error;
         }
-        const result = await User.create({
-            username,
+        await User.create({
+            userName,
             role_id,
             data
         });
-        res.json(result);
+        res.json({ message: registerPure.ok });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.message);
     }
