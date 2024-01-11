@@ -19,6 +19,7 @@ const userSchema = schemaMaker(
         role_id: {
             type: mongoose.ObjectId,
             required: true,
+            ref: 'Role',
         },
         data: {
             image: {

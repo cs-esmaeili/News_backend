@@ -13,6 +13,13 @@ const seed = async (app) => {
         userName: process.env.ADMIN_USERNAME,
         role_id: role[0]._id
     });
+
+    for (let index = 0; index < 60; index++) {
+        await User.create({
+            userName: "091373786" + index,
+            role_id: role[0]._id
+        });
+    }
     await console.log(`${red(seqNumber)} : ${green('User seed done')}`);
 }
 
