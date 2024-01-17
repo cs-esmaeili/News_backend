@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 //* Routes
 
-// app.use(checkRoutePermission);
+app.use(checkRoutePermission);
 app.use("/user", user);
 app.use("/role", role);
 app.use("/permission", permission);

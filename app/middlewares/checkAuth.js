@@ -1,4 +1,5 @@
 const { extractBearer } = require('./../utils/bearer');
+const { checkLogInTime } = require('./../utils/checkLogInTime');
 const User = require('./../database/models/User');
 const Token = require('./../database/models/Token');
 const Role = require('./../database/models/Role');
@@ -17,7 +18,12 @@ exports.checkRoutePermission = async (req, res, next) => {
                 res.status(500).json({ error: 'Bearer Token is wrong' });
                 return;
             }
-            const user = await User.findOne({ token_id: tokenObject._id });
+            const user = await User.findOne({ token_id: tokenObject._id }).populate("token_id");
+            const timeCheck = await checkLogInTime(user.token_id.updatedAt);
+            if(!timeCheck){
+                res.status(403).json({ error: 'session expired' });//TODO message BAYAD bashe fekr konam barye front ke neshon bede
+                return;
+            }
             const permissions = (await Role.findOne({ _id: user.role_id })).permissions;
             const permission = await Permission.find({ _id: { $in: permissions }, route: currentRoute });
             if (permission.length === 0) {

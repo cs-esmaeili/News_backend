@@ -7,7 +7,13 @@ const { schemaMaker } = require('./baseSchema');
 const userSchema = schemaMaker(
     {
         token_id: {
-            type: mongoose.ObjectId
+            type: mongoose.ObjectId,
+            ref: 'Token',
+        },
+        role_id: {
+            type: mongoose.ObjectId,
+            required: true,
+            ref: 'Role',
         },
         userName: {
             type: String,
@@ -15,11 +21,6 @@ const userSchema = schemaMaker(
             unique: true,
             max: 11,
             min: 11,
-        },
-        role_id: {
-            type: mongoose.ObjectId,
-            required: true,
-            ref: 'Role',
         },
         data: {
             image: {
