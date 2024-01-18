@@ -15,28 +15,24 @@ exports.checkRoutePermission = async (req, res, next) => {
             req.token = bearerToken;
             const tokenObject = await Token.findOne({ token: bearerToken });
             if (tokenObject == null) {
-                res.status(500).json({ error: 'Bearer Token is wrong' });
-                return;
+                throw { message: 'Bearer Token is wrong', statusCode: 403 };
             }
             const user = await User.findOne({ token_id: tokenObject._id }).populate("token_id");
             const timeCheck = await checkLogInTime(user.token_id.updatedAt);
-            if(!timeCheck){
-                res.status(403).json({ error: 'session expired' });//TODO message BAYAD bashe fekr konam barye front ke neshon bede
-                return;
+            if (!timeCheck) {
+                throw { message: 'Session expired', statusCode: 403 };
             }
             const permissions = (await Role.findOne({ _id: user.role_id })).permissions;
             const permission = await Permission.find({ _id: { $in: permissions }, route: currentRoute });
             if (permission.length === 0) {
-                res.status(403).json({ error: 'Access denied: Insufficient permissions' });
-                return;
+                throw { message: 'Access denied: Insufficient permissions', statusCode: 403 };
             }
             req.body.user = user;
             next();
         } else {
-            res.status(500).json({ error: 'Bearer Token is missing' });
-            return;
+            throw { message: 'Bearer Token is missing', statusCode: 401 };
         }
-    } catch (error) {
-        res.status(error.statusCode || 500).json("Server Error");
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err);
     }
 }
