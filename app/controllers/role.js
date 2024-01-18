@@ -27,11 +27,9 @@ exports.createRole = async (req, res, next) => {
             res.send({ message: mCreateRole.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mCreateRole.fail };
-        throw error;
+        throw { message: mCreateRole.fail, statusCode: 500 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 
@@ -41,9 +39,7 @@ exports.deleteRole = async (req, res, next) => {
         const result = transaction(async () => {
             const deletedResult = await Role.deleteOne({ _id: role_id });
             if (deletedResult.deletedCount == 0) {
-                const error = new Error();
-                error.message = "role_id for delete notFound !";
-                throw error;
+                throw { message: mDeleteRole.fail_1, statusCode: 500 };
             }
             await User.updateMany({ role_id }, { role_id: newRole_id });
         });
@@ -51,11 +47,9 @@ exports.deleteRole = async (req, res, next) => {
             res.send({ message: mDeleteRole.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mDeleteRole.fail };
-        throw error;
+        throw { message: mDeleteRole.fail_2, statusCode: 500 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 exports.updateRole = async (req, res, next) => {
@@ -66,10 +60,8 @@ exports.updateRole = async (req, res, next) => {
             res.send({ status: "ok", message: mUpdateRole.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mUpdateRole.fail };
-        throw error;
+        throw { message: mUpdateRole.fail, statusCode: 500 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }

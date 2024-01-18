@@ -7,9 +7,7 @@ exports.togglePermission = async (req, res, next) => {
     try {
         let permissions = (await Role.findOne({ _id: role_id }));
         if (permissions == null) {
-            const error = new Error();
-            error.message = "Role notFound !";
-            throw error;
+            throw { message: mTogglePermission.fail_1, statusCode: 401 };
         }
         permissions = permissions.permissions;
         let result = null;
@@ -24,10 +22,8 @@ exports.togglePermission = async (req, res, next) => {
             res.send({ message: mTogglePermission.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mTogglePermission.fail };
-        throw error;
+        throw { message: mTogglePermission.fail_1, statusCode: 401 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }

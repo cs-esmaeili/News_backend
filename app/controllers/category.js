@@ -1,9 +1,5 @@
-const path = require('path');
-const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 const Category = require('../database/models/Category');
-const { getLocalPathFromUrl } = require('../utils/file');
 const Post = require('../database/models/Post');
-const { getBase64 } = require('@plaiceholder/base64');
 const { mCreateCategory, mDeleteCategory, mUpdateCategory } = require('../messages/response.json');
 
 exports.createCategory = async (req, res, next) => {
@@ -14,12 +10,9 @@ exports.createCategory = async (req, res, next) => {
             res.send({ message: mCreateCategory.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mCreateCategory.fail };
-        error.statusCode = 401;
-        throw error;
+        throw { message: mCreateCategory.fail, statusCode: 401 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 
@@ -30,7 +23,7 @@ exports.categoryList = async (req, res, next) => {
         const categorysCount = await Category.countDocuments({});
         res.send({ categorysCount, categorys });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 500).json(err);
     }
 }
 
@@ -39,18 +32,15 @@ exports.deleteCategory = async (req, res, next) => {
     try {
         const deletedResult = await Category.deleteOne({ _id: category_id });
         if (deletedResult.deletedCount == 0) {
-            const error = new Error();
-            error.message = "category_id for delete notFound !";
-            throw error;
+            throw { message: mDeleteCategory.fail, statusCode: 500 };
         }
+        if (newCategory_id != null && newCategory_id != "") {
+            await Post.updateMany({ category_id }, { category_id: newCategory_id });
+        }
+        res.send({ message: mDeleteCategory.ok });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.errors || err.message);
+        res.status(err.statusCode || 422).json(err);
     }
-    if (newCategory_id != null && newCategory_id != "") {
-        await Post.updateMany({ category_id }, { category_id: newCategory_id });
-    }
-    res.send({ message: mDeleteCategory.ok });
-
 }
 
 exports.updateCategory = async (req, res, next) => {
@@ -61,10 +51,8 @@ exports.updateCategory = async (req, res, next) => {
             res.send({ status: "ok", message: mUpdateCategory.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mUpdateCategory.fail };
-        throw error;
+        throw { message: mUpdateCategory.fail, statusCode: 500 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }

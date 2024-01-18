@@ -10,7 +10,6 @@ exports.saveFile = async (req, res, next) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
-
     const { location } = req.body;
     const fileList = req.files['files[]'];
     const result = await transaction(async () => {
@@ -20,7 +19,6 @@ exports.saveFile = async (req, res, next) => {
             fs.mkdirSync(saveFileLocation, { recursive: true });
             uploadedFile.mv(path.join(saveFileLocation, newFileName));
         }
-
         if (typeof fileList === 'object' && fileList !== null && !Array.isArray(fileList)) {
             await saveFileandData(fileList);
         } else {
@@ -29,7 +27,6 @@ exports.saveFile = async (req, res, next) => {
                 await saveFileandData(uploadedFile);
             }
         }
-
     });
     if (result === true) {
         res.send({ message: mSaveFile.ok });

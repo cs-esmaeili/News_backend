@@ -18,14 +18,12 @@ exports.createPost = async (req, res, next) => {
             res.send({ message: mCreatePost.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mCreatePost.fail_1 };
-        throw error;
+        throw { message: mCreatePost.fail_1, statusCode: 500 };
     } catch (err) {
         if (err.code == 11000) {
             res.status(err.statusCode || 422).json({ message: mCreatePost.fail_2 });
         } else {
-            res.status(err.statusCode || 422).json(err.message);
+            res.status(err.statusCode || 422).json(err);
         }
     }
 }
@@ -34,13 +32,11 @@ exports.deletePost = async (req, res, next) => {
         const { post_id } = req.body;
         const deletedResult = await Post.deleteOne({ _id: post_id });
         if (deletedResult.deletedCount == 0) {
-            const error = new Error();
-            error.message = { message: mDeletePost.fail };
-            throw error;
+            throw { message: mDeletePost.fail, statusCode: 500 };
         }
         res.send({ message: mDeletePost.ok });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 exports.updatePost = async (req, res, next) => {
@@ -57,11 +53,9 @@ exports.updatePost = async (req, res, next) => {
             res.send({ message: mUpdatePost.ok });
             return;
         }
-        const error = new Error();
-        error.message = { message: mUpdatePost.fail };
-        throw error;
+        throw { message: mUpdatePost.fail, statusCode: 500 };
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 
@@ -87,10 +81,7 @@ exports.postSerach = async (req, res, next) => {
         const posts = await Post.find({ title: { $regex: convertedSearch, $options: 'i' } })
             .skip((page - 1) * perPage)
             .limit(perPage);
-
         const total = await Post.countDocuments({ title: { $regex: convertedSearch, $options: 'i' } });
-
-
         res.send({ status: "ok", totalPosts: total, posts });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

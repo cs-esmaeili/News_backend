@@ -33,6 +33,6 @@ exports.checkRoutePermission = async (req, res, next) => {
             throw { message: 'Bearer Token is missing', statusCode: 401 };
         }
     } catch (err) {
-        res.status(err.statusCode || 422).json(err);
+        res.status(err.statusCode || 500).json(err);
     }
 }
