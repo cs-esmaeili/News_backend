@@ -1,34 +1,32 @@
 const { createToken } = require("../utils/token");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
+const SmsCode = require("../database/models/SmsCode");
+const { SendVerifyCodeSms } = require("../utils/sms");
 const bcrypt = require('bcryptjs');
-const { mlogIn, mRegister, registerPure, updateRegisterPure } = require('../messages/response.json');
+const { mlogInStepOne, mRegister, registerPure, updateRegisterPure } = require('../messages/response.json');
 
-// exports.logIn = async (req, res, next) => {
-//     try {
-//         await User.logInValidation(req.body);
-//         const { userName, passWord } = await req.body;
-//         const user = await User.findOne({ userName });
-//         const check = await bcrypt.compare(passWord, user.passWord);
-//         if (!user || !check) {
-//             const error = new Error();
-//             error.message = { message: mlogIn.fail_1 };
-//             error.statusCode = 401;
-//             throw error;
-//         }
-//         const { token } = await createToken(userName, user.token_id);
-//         if (token == false) {
-//             const error = new Error();
-//             error.message = { message: mlogIn.fail_2 };
-//             error.statusCode = 500;
-//             throw error;
-//         }
-//         res.send({ token });
-//     } catch (err) {
-//         res.status(err.statusCode || 422).json(err.message);
-//     }
+exports.logInStepOne = async (req, res, next) => {
+    try {
+        await User.logInStepOneValidation(req.body);
+        const { userName } = await req.body;
+        const user = await User.findOne({ userName });
+        if (!user) {
+            throw { message: mlogInStepOne.fail_1, statusCode: 404 };
+        }
+        const { result, code } = await SmsCode.createVerifyCode(user._id);
+        const sms = await SendVerifyCodeSms(userName, code);
+        console.log(userName, code);
 
-// }
+        if (sms.data.status != 1) {
+            throw { message: mlogInStepOne.fail_2, statusCode: 422 };
+        }
+        res.json({ message: mlogInStepOne.ok });
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err);
+    }
+
+}
 
 // exports.register = async (req, res, next) => {
 //     try {
@@ -80,7 +78,7 @@ exports.registerPure = async (req, res, next) => {
         });
         res.json({ message: registerPure.ok });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err.message);
+        res.status(err.statusCode || 422).json(err);
     }
 }
 

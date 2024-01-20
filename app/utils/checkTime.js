@@ -5,18 +5,19 @@ const converTimeToTehran = (time) => {
     let result = new Intl.DateTimeFormat('fa-IR-u-nu-latn').format(tehranDate.toDate()) + " " + tehranDate.format('HH:mm:ss');
     return result;
 }
-exports.checkLogInTime = (minTime) => {
+exports.checkDelayTime = (minTime, delayTime, betweenTimes = true) => {
     try {
-
-
         let currentTime = new Date().getTime();
         currentTime = converTimeToTehran(currentTime);
 
         let expireTime = new Date(minTime);
-        expireTime.setMinutes(parseInt(expireTime.getMinutes()) + parseInt(process.env.USERS_SESSIONS_TIME));
+        expireTime.setMinutes(parseInt(expireTime.getMinutes()) + parseInt(delayTime));
         expireTime = momentZone(expireTime).tz('Asia/Tehran').format('YYYY/MM/DD HH:mm:ss');
 
-        if (currentTime > minTime && currentTime < expireTime) {
+        if(betweenTimes == false && currentTime > expireTime){
+            return true;
+        }
+        if (betweenTimes && currentTime > minTime && currentTime < expireTime) {
             return true;
         }
         return false;

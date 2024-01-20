@@ -1,5 +1,5 @@
 const { extractBearer } = require('./../utils/bearer');
-const { checkLogInTime } = require('./../utils/checkLogInTime');
+const { checkDelayTime } = require('../utils/checkTime');
 const User = require('./../database/models/User');
 const Token = require('./../database/models/Token');
 const Role = require('./../database/models/Role');
@@ -18,7 +18,7 @@ exports.checkRoutePermission = async (req, res, next) => {
                 throw { message: 'Bearer Token is wrong', statusCode: 403 };
             }
             const user = await User.findOne({ token_id: tokenObject._id }).populate("token_id");
-            const timeCheck = await checkLogInTime(user.token_id.updatedAt);
+            const timeCheck = await checkDelayTime(user.token_id.updatedAt, process.env.USERS_SESSIONS_TIME);
             if (!timeCheck) {
                 throw { message: 'Session expired', statusCode: 403 };
             }

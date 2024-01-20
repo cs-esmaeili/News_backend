@@ -1,8 +1,7 @@
-const { logInSchema } = require("../../validations/admin/logIn");
+const { logInStepOneSchema } = require("../../validations/admin/logIn");
 const { registerSchema } = require("../../validations/admin/register");
 const mongoose = require("mongoose");
 const { schemaMaker } = require('./baseSchema');
-
 
 const userSchema = schemaMaker(
     {
@@ -42,8 +41,8 @@ const userSchema = schemaMaker(
         },
     }
 );
-userSchema.statics.logInValidation = function (body) {
-    return logInSchema.validate(body, { abortEarly: false });
+userSchema.statics.logInStepOneValidation = function (body) {
+    return logInStepOneSchema.validate(body, { abortEarly: false });
 };
 userSchema.statics.registerValidation = function (body) {
     return registerSchema.validate(body, { abortEarly: false });
