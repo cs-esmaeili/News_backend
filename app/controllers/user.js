@@ -3,8 +3,9 @@ const User = require("../database/models/User");
 const Role = require("../database/models/Role");
 const VerifyCode = require("../database/models/VerifyCode");
 const { SendVerifyCodeSms } = require("../utils/sms");
+const { checkDelayTime } = require("../utils/checkTime");
 const bcrypt = require('bcryptjs');
-const { mlogInStepOne, mRegister, registerPure, updateRegisterPure } = require('../messages/response.json');
+const { mlogInStepOne, mlogInStepTwo, mRegister, registerPure, updateRegisterPure } = require('../messages/response.json');
 
 exports.logInStepOne = async (req, res, next) => {
     try {
@@ -25,38 +26,36 @@ exports.logInStepOne = async (req, res, next) => {
     }
 
 }
+exports.logInStepTwo = async (req, res, next) => {
+    try {
+        await User.logInStepOneValidation(req.body);
+        const { userName, code } = await req.body;
+        const user = await User.findOne({ userName }).lean();
+        if (!user) {
+            throw { message: mlogInStepTwo.fail_1, statusCode: 404 };
+        }
+        const verifycode = await VerifyCode.findOne({ user_id: user._id }).lean();
+        if(!verifycode){
+            throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
+        }
+        const checkTime = checkDelayTime(verifycode.updatedAt, process.env.SMS_RESEND_DELAY, true);
+        if (!checkTime) {
+            throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
+        }
+        const codeCheck = await bcrypt.compare(code, verifycode.code);
+        if (!codeCheck) {
+            throw { message: mlogInStepTwo.fail_3, statusCode: 404 };
+        }
+        const { _id, token } = await createToken(userName, user.token_id);
+        const userUpdate = await User.updateOne({ _id: user._id }, { token_id: _id });
+        const verifyCodeDelete = await VerifyCode.deleteOne({ user_id: user._id }).lean();
 
-// exports.register = async (req, res, next) => {
-//     try {
-//         await User.registerValidation(req.body);
-//         const { userName, passWord, role_id } = await req.body;
-//         let user = await User.findOne({ userName });
-//         if (user) {
-//             const error = new Error();
-//             error.message = { message: mRegister.fail_1 };
-//             error.statusCode = 422;
-//             throw error;
-//         }
-//         let Role = await Role.findOne({ _id: role_id });
-//         if (!Role) {
-//             const error = new Error();
-//             error.message = { message: mRegister.fail_2 };
-//             error.statusCode = 422;
-//             throw error;
-//         }
-//         const token = await createToken(userName);
+        res.json({ message: mlogInStepTwo.ok, token });
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err);
+    }
 
-//         const result = await User.create({
-//             token_id: token._id,
-//             userName,
-//             passWord: await bcrypt.hash(passWord, 10),
-//             role_id
-//         });
-//         res.json(result);
-//     } catch (err) {
-//         res.status(err.statusCode || 422).json(err.message);
-//     }
-// }
+}
 
 exports.registerPure = async (req, res, next) => {
     try {

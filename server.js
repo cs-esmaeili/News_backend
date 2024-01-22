@@ -11,6 +11,7 @@ const post = require("./app/routes/post");
 const role = require("./app/routes/role");
 const user = require("./app/routes/user");
 const { logInStepOne } = require("./app/controllers/user");
+const { logInStepTwo } = require("./app/controllers/user");
 const permission = require("./app/routes/permission");
 const { config } = require("./app/utils/sms");
 
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 app.use(convertTimestamps);
 app.use("/logInStepOne", logInStepOne);
+app.use("/logInStepTwo", logInStepTwo);
 // app.use(checkRoutePermission);
 app.use("/user", user);
 app.use("/role", role);

@@ -8,7 +8,7 @@ exports.checkDelayTime = (minTime, delayTime, betweenTimes = true) => {
         if (betweenTimes == false && (currentTime > maxTime)) {
             return true;
         }
-        if (betweenTimes && currentTime > minTime && currentTime < maxTime) {
+        if (betweenTimes && currentTime >= new Date(minTime).toISOString() && currentTime <= maxTime) {
             return true;
         }
         return false;
