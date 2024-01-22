@@ -20,7 +20,7 @@ exports.logInStepOne = async (req, res, next) => {
         if (sms.data.status != 1) {
             throw { message: mlogInStepOne.fail_2, statusCode: 422 };
         }
-        res.json({ message: mlogInStepOne.ok });
+        res.json({ message: mlogInStepOne.ok, expireTime: process.env.SMS_RESEND_DELAY });
     } catch (err) {
         res.status(err.statusCode || 422).json(err);
     }
@@ -35,7 +35,7 @@ exports.logInStepTwo = async (req, res, next) => {
             throw { message: mlogInStepTwo.fail_1, statusCode: 404 };
         }
         const verifycode = await VerifyCode.findOne({ user_id: user._id }).lean();
-        if(!verifycode){
+        if (!verifycode) {
             throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
         }
         const checkTime = checkDelayTime(verifycode.updatedAt, process.env.SMS_RESEND_DELAY, true);
