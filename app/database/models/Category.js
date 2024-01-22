@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-module.exports = mongoose.model("Category", schemaMaker(
+const schema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -10,14 +9,10 @@ module.exports = mongoose.model("Category", schemaMaker(
         image: {
             url: String,
             blurHash: String
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
+        }
+    },
+    {
+        timestamps: true
     }
-), 'Category');
+);
+module.exports = mongoose.model("Category", schema, 'Category');

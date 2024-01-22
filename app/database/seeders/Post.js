@@ -27,7 +27,7 @@ const seed = async (app) => {
             ]
         });
     }
-    await console.log(`${red(seqNumber)} : ${green('Permission seed done')}`);
+    await console.log(`${red(seqNumber)} : ${green('Posts seed done')}`);
 }
 
 module.exports = {

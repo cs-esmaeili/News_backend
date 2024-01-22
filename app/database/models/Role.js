@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-module.exports = mongoose.model("Role", schemaMaker(
+const schema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -11,14 +10,10 @@ module.exports = mongoose.model("Role", schemaMaker(
             type: Array,
             required: true,
             ref: 'Permission',
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
+        }
+    },
+    {
+        timestamps: true
     }
-), 'Role');
+);
+module.exports = mongoose.model("Role", schema, 'Role');

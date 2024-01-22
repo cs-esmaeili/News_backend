@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-module.exports = mongoose.model("Post", schemaMaker(
+const schema = new mongoose.Schema(
     {
         title: {
             type: String,
@@ -35,14 +34,11 @@ module.exports = mongoose.model("Post", schemaMaker(
         auther: {
             type: mongoose.ObjectId,
             required: true,
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
+        }
+    },
+    {
+        timestamps: true
     }
-), 'Post');
+);
+
+module.exports = mongoose.model("Post", schema, 'Post');

@@ -1,9 +1,9 @@
 const { logInStepOneSchema } = require("../../validations/admin/logIn");
 const { registerSchema } = require("../../validations/admin/register");
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-const userSchema = schemaMaker(
+
+const schema = new mongoose.Schema(
     {
         token_id: {
             type: mongoose.ObjectId,
@@ -31,13 +31,17 @@ const userSchema = schemaMaker(
             birthday: mongoose.Schema.Types.Mixed,
             shebaNumber: String,
         },
+    },
+    {
+        timestamps: true
     }
 );
-userSchema.statics.logInStepOneValidation = function (body) {
+
+schema.statics.logInStepOneValidation = function (body) {
     return logInStepOneSchema.validate(body, { abortEarly: false });
 };
-userSchema.statics.registerValidation = function (body) {
+schema.statics.registerValidation = function (body) {
     return registerSchema.validate(body, { abortEarly: false });
 };
 
-module.exports = mongoose.model("User", userSchema, 'User');
+module.exports = mongoose.model("User", schema, 'User');

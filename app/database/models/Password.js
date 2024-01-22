@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-module.exports = mongoose.model("Password", schemaMaker(
+const schema = new mongoose.Schema(
     {
         password: {
             type: String,
@@ -10,26 +9,23 @@ module.exports = mongoose.model("Password", schemaMaker(
         username: {
             type: String,
             required: function () {
-                return !this.user_id; 
+                return !this.user_id;
             }
         },
         user_id: {
             type: String,
             required: function () {
-                return !this.username; 
+                return !this.username;
             }
         },
         use: {
             type: String,
             required: true,
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
+        }
+    },
+    {
+        timestamps: true
     }
-), 'Password');
+);
+
+module.exports = mongoose.model("Password", schema, 'Password');

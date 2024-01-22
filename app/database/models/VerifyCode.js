@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { schemaMaker } = require('./baseSchema');
 
-const verifyCodeSchema = schemaMaker(
+const schema = new mongoose.Schema(
     {
         user_id: {
             type: mongoose.ObjectId,
@@ -14,8 +13,12 @@ const verifyCodeSchema = schemaMaker(
             required: true,
             max: 255,
         },
+    },
+    {
+        timestamps: true
     }
 );
 
 
-module.exports = mongoose.model("VerifyCode", verifyCodeSchema, 'VerifyCode');
+
+module.exports = mongoose.model("VerifyCode", schema, 'VerifyCode');
