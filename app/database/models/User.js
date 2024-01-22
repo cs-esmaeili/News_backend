@@ -31,14 +31,6 @@ const userSchema = schemaMaker(
             birthday: mongoose.Schema.Types.Mixed,
             shebaNumber: String,
         },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: Date.now,
-        },
     }
 );
 userSchema.statics.logInStepOneValidation = function (body) {

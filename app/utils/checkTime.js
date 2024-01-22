@@ -1,23 +1,14 @@
-const momentZone = require('moment-timezone');
-
-const converTimeToTehran = (time) => {
-    let tehranDate = momentZone(time).tz('Asia/Tehran');
-    let result = new Intl.DateTimeFormat('fa-IR-u-nu-latn').format(tehranDate.toDate()) + " " + tehranDate.format('HH:mm:ss');
-    return result;
-}
 exports.checkDelayTime = (minTime, delayTime, betweenTimes = true) => {
     try {
-        let currentTime = new Date().getTime();
-        currentTime = converTimeToTehran(currentTime);
+        let currentTime = new Date().toISOString();
+        let maxTime = new Date(minTime);
+        maxTime.setMinutes(parseInt(maxTime.getMinutes()) + parseInt(delayTime));
+        maxTime = maxTime.toISOString();
 
-        let expireTime = new Date(minTime);
-        expireTime.setMinutes(parseInt(expireTime.getMinutes()) + parseInt(delayTime));
-        expireTime = momentZone(expireTime).tz('Asia/Tehran').format('YYYY/MM/DD HH:mm:ss');
-
-        if(betweenTimes == false && currentTime > expireTime){
+        if (betweenTimes == false && (currentTime > maxTime)) {
             return true;
         }
-        if (betweenTimes && currentTime > minTime && currentTime < expireTime) {
+        if (betweenTimes && currentTime > minTime && currentTime < maxTime) {
             return true;
         }
         return false;

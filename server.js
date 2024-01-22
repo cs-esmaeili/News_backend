@@ -15,6 +15,7 @@ const permission = require("./app/routes/permission");
 const { config } = require("./app/utils/sms");
 
 const { checkRoutePermission } = require("./app/middlewares/checkAuth");
+const { convertTimestamps } = require("./app/middlewares/convertTimes");
 
 const app = express();
 //* Database connection
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 //* Routes
 
+app.use(convertTimestamps);
 app.use("/logInStepOne", logInStepOne);
 // app.use(checkRoutePermission);
 app.use("/user", user);

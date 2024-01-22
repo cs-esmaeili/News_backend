@@ -1,7 +1,7 @@
-const { createToken } = require("../utils/token");
+const { createToken, createVerifyCode } = require("../utils/token");
 const User = require("../database/models/User");
 const Role = require("../database/models/Role");
-const SmsCode = require("../database/models/SmsCode");
+const VerifyCode = require("../database/models/VerifyCode");
 const { SendVerifyCodeSms } = require("../utils/sms");
 const bcrypt = require('bcryptjs');
 const { mlogInStepOne, mRegister, registerPure, updateRegisterPure } = require('../messages/response.json');
@@ -10,14 +10,12 @@ exports.logInStepOne = async (req, res, next) => {
     try {
         await User.logInStepOneValidation(req.body);
         const { userName } = await req.body;
-        const user = await User.findOne({ userName });
+        const user = await User.findOne({ userName }).lean();
         if (!user) {
             throw { message: mlogInStepOne.fail_1, statusCode: 404 };
         }
-        const { result, code } = await SmsCode.createVerifyCode(user._id);
-        const sms = await SendVerifyCodeSms(userName, code);
-        console.log(userName, code);
-
+        const result = await createVerifyCode(user._id);
+        const sms = await SendVerifyCodeSms(userName, result.code);
         if (sms.data.status != 1) {
             throw { message: mlogInStepOne.fail_2, statusCode: 422 };
         }

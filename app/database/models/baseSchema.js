@@ -1,17 +1,19 @@
 const mongoose = require("mongoose");
-const momentZone = require('moment-timezone');
+const { utcToJalali } = require("../../utils/TimeConverter");
 
 
 exports.schemaMaker = (object) => {
 
-    const schema = new mongoose.Schema(object);
+    const schema = new mongoose.Schema(object, {
+        timestamps: true
+    });
 
     const changeDoc = (doc) => {
 
-        if(doc == null){
+        if (doc == null) {
             return null;
         }
-        
+
         function isObject(variable) {
             return (variable !== null && typeof variable === 'object');
         }
@@ -21,12 +23,10 @@ exports.schemaMaker = (object) => {
             transformedDoc = doc.toObject();
         }
         if (doc.createdAt != null) {
-            let tehranDate = momentZone(transformedDoc.createdAt).tz('Asia/Tehran');
-            transformedDoc.createdAt = (new Intl.DateTimeFormat('fa-IR-u-nu-latn').format(tehranDate.toDate())) + " " + tehranDate.format('HH:mm:ss');
+            //   transformedDoc.createdAt = utcToJalali(new Date(transformedDoc.createdAt));
         }
         if (doc.updatedAt != null) {
-            let tehranDate = momentZone(transformedDoc.updatedAt).tz('Asia/Tehran');
-            transformedDoc.updatedAt = (new Intl.DateTimeFormat('fa-IR-u-nu-latn').format(tehranDate.toDate())) + " " + tehranDate.format('HH:mm:ss');
+            // transformedDoc.updatedAt = utcToJalali(new Date(transformedDoc.updatedAt));
         }
 
         for (let prop in transformedDoc) {
