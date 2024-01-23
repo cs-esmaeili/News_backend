@@ -9,19 +9,19 @@ const { mlogInStepOne, mlogInStepTwo, mRegister, registerPure, updateRegisterPur
 
 exports.logInStepOne = async (req, res, next) => {
     try {
-        await User.logInStepOneValidation(req.body);
         const { userName } = await req.body;
-        const user = await User.findOne({ userName }).lean();
+        let user = await User.findOne({ userName }).lean();
         if (!user) {
-            throw { message: mlogInStepOne.fail_1, statusCode: 404 };
+            user = await User.createNormalUser(userName);
         }
         const result = await createVerifyCode(user._id);
         const sms = await SendVerifyCodeSms(userName, result.code);
         if (sms.data.status != 1) {
-            throw { message: mlogInStepOne.fail_2, statusCode: 422 };
+            throw { message: mlogInStepOne.fail_1, statusCode: 422 };
         }
         res.json({ message: mlogInStepOne.ok, expireTime: process.env.SMS_RESEND_DELAY });
     } catch (err) {
+        console.log(err);
         res.status(err.statusCode || 422).json(err);
     }
 
@@ -38,13 +38,13 @@ exports.logInStepTwo = async (req, res, next) => {
         if (!verifycode) {
             throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
         }
-        const checkTime = checkDelayTime(verifycode.updatedAt, process.env.SMS_RESEND_DELAY, true);
-        if (!checkTime) {
-            throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
-        }
         const codeCheck = await bcrypt.compare(code, verifycode.code);
         if (!codeCheck) {
             throw { message: mlogInStepTwo.fail_3, statusCode: 404 };
+        }
+        const checkTime = checkDelayTime(verifycode.updatedAt, process.env.SMS_RESEND_DELAY, true);
+        if (!checkTime) {
+            throw { message: mlogInStepTwo.fail_2, statusCode: 404 };
         }
         const { _id, token } = await createToken(userName, user.token_id);
         const userUpdate = await User.updateOne({ _id: user._id }, { token_id: _id });

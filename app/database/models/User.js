@@ -1,5 +1,6 @@
-const { logInStepOneSchema } = require("../../validations/admin/logIn");
-const { registerSchema } = require("../../validations/admin/register");
+const { createToken } = require("../../utils/token");
+const Role = require("./Role");
+
 const mongoose = require("mongoose");
 
 
@@ -37,11 +38,11 @@ const schema = new mongoose.Schema(
     }
 );
 
-schema.statics.logInStepOneValidation = function (body) {
-    return logInStepOneSchema.validate(body, { abortEarly: false });
-};
-schema.statics.registerValidation = function (body) {
-    return registerSchema.validate(body, { abortEarly: false });
+schema.statics.createNormalUser = async function (userName) {
+    const role = await Role.findOne({ name: "user" });
+    const { _id, token } = await createToken(userName);
+    const user = await this.create({ token_id: _id, role_id: role._id, userName });
+    return user;
 };
 
 module.exports = mongoose.model("User", schema, 'User');

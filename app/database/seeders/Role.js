@@ -13,8 +13,8 @@ const seed = async () => {
         permissionIds.push(id);
     }
 
-    await Role.create({ name: 'admin', permissions: permissionIds });
     await Role.create({ name: 'user', permissions: permissionIds });
+    await Role.create({ name: 'admin', permissions: permissionIds });
 
     await console.log(`${red(seqNumber)} : ${green('Role seed done')}`);
 }
