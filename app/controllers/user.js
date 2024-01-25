@@ -28,7 +28,6 @@ exports.logInStepOne = async (req, res, next) => {
 }
 exports.logInStepTwo = async (req, res, next) => {
     try {
-        await User.logInStepOneValidation(req.body);
         const { userName, code } = await req.body;
         const user = await User.findOne({ userName }).lean();
         if (!user) {

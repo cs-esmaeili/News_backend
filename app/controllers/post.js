@@ -63,11 +63,11 @@ exports.updatePost = async (req, res, next) => {
 exports.postList = async (req, res, next) => {
     try {
         const { page, perPage } = req.body;
-        const posts = await Post.find({}).populate('category_id').skip((page - 1) * perPage).limit(perPage).lean();;
+        const posts = await Post.find({}).populate('category_id').skip((page - 1) * perPage).limit(perPage).lean();
         for (let post of posts) {
             post.categoryName = post.category_id.name;
         }
-        const postsCount = await Post.countDocuments({});
+        const postsCount = await Post.countDocuments({}).lean();
         res.send({ postsCount, posts });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

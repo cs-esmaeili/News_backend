@@ -1,6 +1,6 @@
 const { createToken } = require("../../utils/token");
 const Role = require("./Role");
-
+const { utcToMiladi } = require("../../utils/TimeConverter");
 const mongoose = require("mongoose");
 
 
@@ -31,6 +31,16 @@ const schema = new mongoose.Schema(
             nationalCode: String,
             birthday: mongoose.Schema.Types.Mixed,
             shebaNumber: String,
+        },
+        createdAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: utcToMiladi(new Date()),
+        },
+        updatedAt: {
+            type: mongoose.Schema.Types.Mixed,
+            set: function () {
+                return utcToMiladi(new Date());
+            },
         },
     },
     {

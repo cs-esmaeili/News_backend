@@ -1,6 +1,24 @@
 var jalaali = require('jalaali-js');
 
 
+exports.convertToUTC = (inputDate) => {
+    const dateParts = inputDate.split(' ')[0].split('/');
+    const timeParts = inputDate.split(' ')[1].split(':');
+
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1; // January is 0 in JavaScript
+    const day = parseInt(dateParts[2]);
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+    const seconds = parseInt(timeParts[2]);
+
+    const localDate = new Date(year, month, day, hours, minutes, seconds);
+    const utcDate = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
+
+    return utcDate.toISOString().slice(0, 19).replace('T', ' '); // Format to 'YYYY-MM-DD HH:MM:SS'
+}
+
+
 const refactorFormat = (inputDate) => {
     const parts = inputDate.split(" ");
     const dateParts = parts[0].split("/");

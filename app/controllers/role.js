@@ -7,8 +7,8 @@ const { mCreateRole, mUpdateRole, mDeleteRole } = require('../messages/response.
 
 exports.roleList = async (req, res, next) => {
     try {
-        const permissions = await Permission.find({});
-        const roles = await Role.find({}).populate('permissions');
+        const permissions = await Permission.find({}).lean();
+        const roles = await Role.find({}).populate('permissions').lean();
         res.send({ roles, permissions });
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

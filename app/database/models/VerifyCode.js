@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { utcToMiladi } = require("../../utils/TimeConverter");
 const schema = new mongoose.Schema(
     {
         user_id: {
@@ -12,6 +12,16 @@ const schema = new mongoose.Schema(
             type: String,
             required: true,
             max: 255,
+        },
+        createdAt: {
+            type: mongoose.Schema.Types.Mixed,
+            default: utcToMiladi(new Date()),
+        },
+        updatedAt: {
+            type: mongoose.Schema.Types.Mixed,
+            set: function () {
+                return utcToMiladi(new Date());
+            },
         },
     },
     {
