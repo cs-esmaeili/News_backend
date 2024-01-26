@@ -1,21 +1,26 @@
 const expressListEndpoints = require('express-list-endpoints');
 const Permission = require('../models/Permission');
 const { green, red } = require('colors');
-const messages = require('../../messages/permissions.json');
+const permissions = require('../../messages/permissions.json');
 
 const seqNumber = 1;
 const seed = async (app) => {
-    const availableRoutes = expressListEndpoints(app);
-    for (const key in availableRoutes) {
-        const path = availableRoutes[key].path;
-
+    for (const key in permissions) {
+        const { name, disc } = permissions[key];
         await Permission.create({
-            name: (messages[path] != null ? messages[path].name : path),
-            route: path,
-            disc: (messages[path] != null ? messages[path].disc : path)
+            name,
+            route: key,
+            disc
         });
     }
-
+    const availableRoutes = expressListEndpoints(app);
+    for (let i = 0; i < availableRoutes.length; i++) {
+        const { path } = availableRoutes[i];
+        const result = await Permission.findOne({ route: path });
+        if (!result) {
+            console.log(red(path + " || is Not in the Permission List"));
+        }
+    }
     await console.log(`${red(seqNumber)} : ${green('Permission seed done')}`);
 }
 

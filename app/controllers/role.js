@@ -1,7 +1,6 @@
 const Role = require('../database/models/Role');
 const Permission = require('../database/models/Permission');
 const User = require('../database/models/User');
-const mongoose = require('mongoose');
 const { transaction } = require('../database');
 const { mCreateRole, mUpdateRole, mDeleteRole } = require('../messages/response.json');
 
