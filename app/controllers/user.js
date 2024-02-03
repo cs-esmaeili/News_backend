@@ -17,10 +17,10 @@ exports.logInStepOne = async (req, res, next) => {
             user = await User.createNormalUser(userName);
         }
         const result = await createVerifyCode(user._id);
-        // const sms = await SendVerifyCodeSms(userName, result.code);
-        // if (sms.data.status != 1) {
-        //     throw { message: mlogInStepOne.fail_1, statusCode: 422 };
-        // }
+        const sms = await SendVerifyCodeSms(userName, result.code);
+        if (sms.data.status != 1) {
+            throw { message: mlogInStepOne.fail_1, statusCode: 422 };
+        }
         console.log(result.code);
         res.json({ message: mlogInStepOne.ok, expireTime: process.env.SMS_RESEND_DELAY });
     } catch (err) {
@@ -52,13 +52,25 @@ exports.logInStepTwo = async (req, res, next) => {
         const { _id, token } = await createToken(userName, user.token_id);
         const userUpdate = await User.updateOne({ _id: user._id }, { token_id: _id });
         const verifyCodeDelete = await VerifyCode.deleteOne({ user_id: user._id }).lean();
-        const userPermission = await User.userPermissions(user._id);
 
-        res.json({ message: mlogInStepTwo.ok, token, permissions: userPermission });
+
+        res.json({ message: mlogInStepTwo.ok, token, sessionTime: process.env.USERS_SESSIONS_TIME });
     } catch (err) {
         res.status(err.statusCode || 422).json(err);
     }
 
+}
+exports.userPermissions = async (req, res, next) => {
+    try {
+        if (req.body.user) {
+            const userPermission = await User.userPermissions(req.body.user._id);
+            res.json(userPermission);
+        } else {
+            throw { message: "Log In First !", statusCode: 403 };
+        }
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err);
+    }
 }
 
 exports.registerPure = async (req, res, next) => {
