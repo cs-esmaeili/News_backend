@@ -10,6 +10,7 @@ const file = require("./app/routes/file");
 const post = require("./app/routes/post");
 const role = require("./app/routes/role");
 const user = require("./app/routes/user");
+const site = require("./app/routes/site");
 const { logInStepOne } = require("./app/controllers/user");
 const { logInStepTwo } = require("./app/controllers/user");
 const permission = require("./app/routes/permission");
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 app.use("/logInStepOne", logInStepOne);
 app.use("/logInStepTwo", logInStepTwo);
+app.use("/site", site);
 app.use(checkRoutePermission);
 app.use("/user", user);
 app.use("/role", role);

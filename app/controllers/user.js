@@ -17,10 +17,10 @@ exports.logInStepOne = async (req, res, next) => {
             user = await User.createNormalUser(userName);
         }
         const result = await createVerifyCode(user._id);
-        const sms = await SendVerifyCodeSms(userName, result.code);
-        if (sms.data.status != 1) {
-            throw { message: mlogInStepOne.fail_1, statusCode: 422 };
-        }
+        // const sms = await SendVerifyCodeSms(userName, result.code);
+        // if (sms.data.status != 1) {
+        //     throw { message: mlogInStepOne.fail_1, statusCode: 422 };
+        // }
         console.log(result.code);
         res.json({ message: mlogInStepOne.ok, expireTime: process.env.SMS_RESEND_DELAY });
     } catch (err) {
