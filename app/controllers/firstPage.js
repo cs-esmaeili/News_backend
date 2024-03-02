@@ -11,3 +11,13 @@ exports.categorys = async (req, res, next) => {
         res.status(422).json({ message: mData.fail });
     }
 }
+
+exports.firstPage = async (req, res, next) => {
+    const firstPageData = await FirtPage.find({ location: { $ne: 1 } });
+
+    if (firstPageData) {
+        res.send(firstPageData);
+    } else {
+        res.status(422).json({ message: mData.fail });
+    }
+}
