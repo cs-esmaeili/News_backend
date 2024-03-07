@@ -4,6 +4,12 @@ const sizeOf = require('image-size');
 const { getBase64 } = require('@plaiceholder/base64');
 const BaseFileDir = path.join(process.cwd(), ...JSON.parse(process.env.STORAGE_LOCATION));
 
+
+exports.getImageBlurHash = async (imagePath) => {
+    const hash = await getBase64(BaseFileDir + path.sep + imagePath);
+    return hash;
+}
+
 const isImage = (filePath) => {
     if (!fs.existsSync(filePath)) {
         return false;
@@ -40,9 +46,7 @@ exports.getFilesFromFolder = async (folderPath) => {
         } else if (fileStat.isDirectory()) {
             files.push({ type: "folder", name: element });
         }
-
     }
-
     return files;
 };
 

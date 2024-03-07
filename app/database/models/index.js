@@ -16,7 +16,11 @@ const migration = async () => {
     });
   if (process.env.NODE_ENV === "development" && process.argv.includes('fresh')) {
     models.map(async (model) => {
-      await model.collection.drop();
+      try {
+        await model.collection.drop();
+      } catch (error) {
+        
+      }
     });
     console.log(colors.red(`Models deleted`));
   }
