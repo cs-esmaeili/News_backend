@@ -20,6 +20,14 @@ const seed = async (app) => {
             views: i,
             auther: user._id,
             metaTags: ['haha', "kda"],
+            imageH: {
+                url: process.env.BASE_URL + JSON.parse(process.env.STORAGE_LOCATION)[2] + "/1.jpg",
+                blurHash
+            },
+            imageV: {
+                url: process.env.BASE_URL + JSON.parse(process.env.STORAGE_LOCATION)[2] + "/1.jpg",
+                blurHash
+            },
             body: [
                 { type: "Text", content: "This is text" },
                 { type: "Image", content: { url: "http://localhost:3000/storage/1.jpg", blurHash } },

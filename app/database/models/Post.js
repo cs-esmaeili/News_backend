@@ -38,11 +38,11 @@ const schema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        thumbnail_image_h: {
+        imageH: {
             url: String,
             blurHash: String
         },
-        thumbnail_image_v: {
+        imageV: {
             url: String,
             blurHash: String
         },

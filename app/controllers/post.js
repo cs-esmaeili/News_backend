@@ -3,7 +3,7 @@ const Post = require('../database/models/Post');
 const { mCreatePost, mDeletePost, mUpdatePost } = require('../messages/response.json');
 exports.createPost = async (req, res, next) => {
     try {
-        const { title, disc, category_id, body, metaTags } = req.body;
+        const { title, disc, category_id, body, metaTags, imageH, imageV } = req.body;
         const result = await Post.create({
             title,
             disc,
@@ -11,8 +11,9 @@ exports.createPost = async (req, res, next) => {
             body,
             views: 0,
             metaTags,
-            auther: "656b50a17ea7d8a6e27f00e9",
-            // auther: req.body.user._id,
+            imageH,
+            imageV,
+            auther: req.body.user._id,
         });
         if (result) {
             res.send({ message: mCreatePost.ok });
@@ -41,13 +42,15 @@ exports.deletePost = async (req, res, next) => {
 }
 exports.updatePost = async (req, res, next) => {
     try {
-        const { post_id, title, disc, category_id, body, metaTags } = req.body;
+        const { post_id, title, disc, category_id, body, metaTags, imageH, imageV } = req.body;
         const updateResult = await Post.updateOne({ _id: post_id }, {
             title,
             disc,
             category_id: new mongoose.Types.ObjectId(category_id),
             body,
             metaTags,
+            imageH,
+            imageV,
         });
         if (updateResult.modifiedCount == 1) {
             res.send({ message: mUpdatePost.ok });

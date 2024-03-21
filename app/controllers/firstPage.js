@@ -3,7 +3,10 @@ const { mData } = require('../messages/response.json');
 
 
 exports.categorys = async (req, res, next) => {
-    const chosenCategorys = await FirtPage.findOne({ location: 1 });
+    const chosenCategorys = await FirtPage.findOne({ location: 1 }).populate({
+        path: 'data',
+        model: 'Category',
+    });;
 
     if (chosenCategorys) {
         res.send(chosenCategorys.data);
@@ -13,7 +16,15 @@ exports.categorys = async (req, res, next) => {
 }
 
 exports.firstPage = async (req, res, next) => {
-    const firstPageData = await FirtPage.find({ location: { $ne: 1 } });
+    const firstPageData = await FirtPage.find({ location: { $ne: 1 } }).populate({
+        path: 'data',
+        model: 'Post',
+        populate: {
+            path: 'category_id',
+            model: 'Category',
+            select: 'name'
+        }
+    });
 
     if (firstPageData) {
         res.send(firstPageData);
