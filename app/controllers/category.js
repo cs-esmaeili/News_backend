@@ -56,3 +56,13 @@ exports.updateCategory = async (req, res, next) => {
         res.status(err.statusCode || 422).json(err);
     }
 }
+
+exports.getCategoryData = async (req, res, next) => {
+    try {
+        const { name } = req.body;
+        const category = await Category.findOne({ name });
+        res.send(category);
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err);
+    }
+}

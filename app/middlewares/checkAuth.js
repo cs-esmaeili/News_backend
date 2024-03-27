@@ -5,11 +5,22 @@ const Token = require('./../database/models/Token');
 const Role = require('./../database/models/Role');
 const Permission = require('./../database/models/Permission');
 
+const passRoutes = [
+    '/logInStepOne',
+    '/logInStepTwo',
+    '/site/firstPage',
+    '/category/getCategoryData',
+];
 
 exports.checkRoutePermission = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const currentRoute = req.path;
+        console.log(currentRoute);
+        if(passRoutes.includes(currentRoute)){
+            next();
+            return;
+        }
         if (authHeader && authHeader.startsWith('Bearer ')) {
             const bearerToken = extractBearer(authHeader);
             req.token = bearerToken;

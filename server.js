@@ -40,11 +40,11 @@ app.use(express.static(path.join(__dirname, "app", "public")));
 
 
 //* Routes
-
+app.use(checkRoutePermission);
 app.use("/logInStepOne", logInStepOne);
 app.use("/logInStepTwo", logInStepTwo);
 app.use("/site", site);
-app.use(checkRoutePermission);
+
 app.use("/user", user);
 app.use("/role", role);
 app.use("/permission", permission);
