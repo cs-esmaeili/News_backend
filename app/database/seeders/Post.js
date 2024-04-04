@@ -11,8 +11,14 @@ const seed = async (app) => {
     const user = (await User.find({}))[0];
 
     for (let i = 0; i < 90; i++) {
-        const category = categorys[(Math.floor(Math.random() * categorys.length))];
+        let category = categorys[(Math.floor(Math.random() * categorys.length))];
+        if (i < 20) {
+            category = categorys[0];
+        } else {
+            category = categorys[(Math.floor(Math.random() * categorys.length))];
+        }
         const blurHash = await getImageBlurHash("1.jpg");
+
         await Post.create({
             title: 'Some post ' + i,
             disc: "Velit et velit exercitation deserunt duis ut culpa incididunt excepteur aute.",
@@ -35,6 +41,7 @@ const seed = async (app) => {
             ]
         });
     }
+
     await console.log(`${red(seqNumber)} : ${green('Posts seed done')}`);
 }
 

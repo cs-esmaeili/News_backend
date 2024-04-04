@@ -1,5 +1,6 @@
 const Category = require('../database/models/Category');
 const Post = require('../database/models/Post');
+const FirtPage = require('../database/models/FirtPage');
 const { mCreateCategory, mDeleteCategory, mUpdateCategory } = require('../messages/response.json');
 
 exports.createCategory = async (req, res, next) => {
@@ -59,10 +60,26 @@ exports.updateCategory = async (req, res, next) => {
 
 exports.getCategoryData = async (req, res, next) => {
     try {
-        const { name } = req.body;
+        const { name, page, perPage } = req.body;
         const category = await Category.findOne({ name });
-        res.send(category);
+        const posts = await Post.find({ category_id: category._id }).populate('category_id').skip((page - 1) * perPage).limit(perPage).lean();
+        const postsCount = await Post.countDocuments({ category_id: category._id }).lean();
+        res.send({ category, postsCount, posts });
     } catch (err) {
-        res.status(err.statusCode || 422).json(err);
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+
+
+exports.categorys = async (req, res, next) => {
+    const chosenCategorys = await FirtPage.findOne({ location: 1 }).populate({
+        path: 'data',
+        model: 'Category',
+    });;
+
+    if (chosenCategorys) {
+        res.send(chosenCategorys.data);
+    } else {
+        res.status(422).json({ message: mData.fail });
     }
 }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Post = require('../database/models/Post');
 const { mCreatePost, mDeletePost, mUpdatePost } = require('../messages/response.json');
+
 exports.createPost = async (req, res, next) => {
     try {
         const { title, disc, category_id, body, metaTags, imageH, imageV } = req.body;
@@ -86,6 +87,16 @@ exports.postSerach = async (req, res, next) => {
             .limit(perPage);
         const total = await Post.countDocuments({ title: { $regex: convertedSearch, $options: 'i' } });
         res.send({ status: "ok", totalPosts: total, posts });
+    } catch (err) {
+        res.status(err.statusCode || 422).json(err.errors || err.message);
+    }
+}
+
+exports.getPost = async (req, res, next) => {
+    try {
+        const { title } = req.body;
+        const post = await Post.findOne({ title });
+        res.send(post);
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);
     }

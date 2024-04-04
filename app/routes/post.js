@@ -10,4 +10,6 @@ router.post("/createPost", post.createPost);
 router.post("/updatePost", post.updatePost);
 router.post("/deletePost", post.deletePost);
 
+router.post("/getPost", post.getPost);
+
 module.exports = router;
