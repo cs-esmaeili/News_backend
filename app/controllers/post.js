@@ -95,7 +95,7 @@ exports.postSerach = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
     try {
         const { title } = req.body;
-        const post = await Post.findOne({ title });
+        const post = await Post.findOne({ title }).populate('category_id').lean();
         res.send(post);
     } catch (err) {
         res.status(err.statusCode || 422).json(err.errors || err.message);

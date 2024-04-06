@@ -37,7 +37,7 @@ const seed = async (app) => {
             body: [
                 { type: "Text", content: "This is text" },
                 { type: "Image", content: { url: "http://localhost:3000/storage/1.jpg", blurHash } },
-                { type: "Video", content: { url: "http://localhost:3000/storage/1.jpg" } },
+                { type: "Video", content: { url: "http://localhost:3000/storage/3.mp4" } },
             ]
         });
     }
