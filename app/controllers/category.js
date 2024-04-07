@@ -50,7 +50,7 @@ exports.updateCategory = async (req, res, next) => {
         const { category_id, name, image } = req.body;
         const updateResult = await Category.updateOne({ _id: category_id }, { name, image });
         if (updateResult.modifiedCount == 1) {
-            res.send({ status: "ok", message: mUpdateCategory.ok });
+            res.send({ message: mUpdateCategory.ok });
             return;
         }
         throw { message: mUpdateCategory.fail, statusCode: 500 };
@@ -73,7 +73,7 @@ exports.getCategoryData = async (req, res, next) => {
 
 
 exports.categorys = async (req, res, next) => {
-    const chosenCategorys = await FirtPage.findOne({ location: 1 }).populate({
+    const chosenCategorys = await FirtPage.findOne({ location: 0 }).populate({
         path: 'data',
         model: 'Category',
     });;

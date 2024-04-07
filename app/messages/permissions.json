@@ -122,5 +122,9 @@
     "/user/userPermissions": {
         "name": "Role List", 
         "disc": "This is Permission is need for get Roles "
+    },
+    "/site/updateFirstPage": {
+        "name": "Role List", 
+        "disc": "This is Permission is need for get Roles "
     }
 }
