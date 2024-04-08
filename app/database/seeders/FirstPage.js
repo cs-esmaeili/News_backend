@@ -32,7 +32,7 @@ const seed = async (app) => {
 
     await FirtPage.create({
         location: 3,
-        data: posts
+        data: posts.slice(0, 5)
     });
 
     await FirtPage.create({

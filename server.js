@@ -3,7 +3,6 @@ const dotenv = require('dotenv').config();
 var cors = require('cors');
 const fileUpload = require("express-fileupload");
 const express = require("express");
-const mongoose = require("mongoose");
 const { connect } = require('./app/database');
 const category = require("./app/routes/category");
 const file = require("./app/routes/file");
@@ -18,47 +17,53 @@ const { config } = require("./app/utils/sms");
 
 const { checkRoutePermission } = require("./app/middlewares/checkAuth");
 
-const app = express();
-//* Database connection
-connect(app);
-
-//SMS config
-config();
-
-//* BodyPaser
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-//* File Upload Middleware
-app.use(fileUpload());
+(async () => {
+  const app = await express();
 
 
-app.use(cors());
+  //SMS config
+  config();
 
-//* Static Folder
-app.use(express.static(path.join(__dirname, "app", "public")));
+  //* BodyPaser
+  app.use(express.urlencoded({ extended: false }));
+  app.use(express.json());
+
+  //* File Upload Middleware
+  app.use(fileUpload());
 
 
-//* Routes
-app.use(checkRoutePermission);
-app.use("/logInStepOne", logInStepOne);
-app.use("/logInStepTwo", logInStepTwo);
-app.use("/site", site);
+  app.use(cors());
 
-app.use("/user", user);
-app.use("/role", role);
-app.use("/permission", permission);
-app.use("/category", category);
-app.use("/post", post);
-app.use("/file", file);
+  //* Static Folder
+  app.use(express.static(path.join(__dirname, "app", "public")));
 
-//* 404 Page
-// app.use(require("./controllers/errorController").get404);
 
-const PORT = process.env.PORT || 3000;
+  //* Routes
+  app.use(checkRoutePermission);
+  app.use("/logInStepOne", logInStepOne);
+  app.use("/logInStepTwo", logInStepTwo);
+  app.use("/site", site);
 
-app.listen(PORT, () => {
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
-  )
-});
+  app.use("/user", user);
+  app.use("/role", role);
+  app.use("/permission", permission);
+  app.use("/category", category);
+  app.use("/post", post);
+  app.use("/file", file);
+
+  //* 404 Page
+  // app.use(require("./controllers/errorController").get404);
+
+  //* Database connection
+  await connect(app);
+
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log(
+      `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`
+    )
+  });
+
+})();
+
