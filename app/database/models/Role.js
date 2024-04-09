@@ -1,39 +1,15 @@
 const mongoose = require("mongoose");
-const { utcToMiladi } = require("../../utils/TimeConverter");
+const { buildSchema } = require("./builder");
 
-const schema = new mongoose.Schema(
-    {
-        name: {
-            type: String,
-            required: true,
-        },
-        permissions: {
-            type: Array,
-            required: true,
-            ref: 'Permission',
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: utcToMiladi(new Date()),
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: utcToMiladi(new Date()),
-            set: function () {
-                return utcToMiladi(new Date());
-            },
-        },
+
+module.exports = mongoose.model("Role", buildSchema({
+    name: {
+        type: String,
+        required: true,
     },
-    {
-        timestamps: true
+    permissions: {
+        type: Array,
+        required: true,
+        ref: 'Permission',
     }
-);
-
-// schema.pre('updateOne', async function (next) {
-//     const time = await utcToJalali(new Date());
-//     console.log(time);
-//     this._update.updatedAt_M = time;
-//     next();
-// });
-
-module.exports = mongoose.model("Role", schema, 'Role');
+}), 'Role');

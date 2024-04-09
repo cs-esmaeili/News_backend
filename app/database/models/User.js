@@ -1,10 +1,10 @@
-const { utcToMiladi } = require("../../utils/TimeConverter");
+const { buildSchema } = require("./builder");
 const { createToken } = require("../../utils/token");
 const Role = require("./Role");
 const mongoose = require("mongoose");
 
 
-const schema = new mongoose.Schema(
+const schema = buildSchema(
     {
         token_id: {
             type: mongoose.ObjectId,
@@ -31,20 +31,7 @@ const schema = new mongoose.Schema(
             nationalCode: String,
             birthday: mongoose.Schema.Types.Mixed,
             shebaNumber: String,
-        },
-        createdAt: {
-            type: mongoose.Schema.Types.Mixed,
-            default: utcToMiladi(new Date()),
-        },
-        updatedAt: {
-            type: mongoose.Schema.Types.Mixed,
-            set: function () {
-                return utcToMiladi(new Date());
-            },
-        },
-    },
-    {
-        timestamps: true
+        }
     }
 );
 
