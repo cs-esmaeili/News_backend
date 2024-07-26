@@ -11,23 +11,26 @@ exports.logInStepOne = async (req, res, next) => {
     try {
         const { userName } = await req.body;
         let user = await User.findOne({ userName });
-        let test = await User.userPermissions(user._id);
 
         if (!user) {
             user = await User.createNormalUser(userName);
         }
         const result = await createVerifyCode(user._id);
-        // const sms = await SendVerifyCodeSms(userName, result.code);
-        // if (sms.data.status != 1) {
-        //     throw { message: mlogInStepOne.fail_1, statusCode: 422 };
-        // }
-        console.log(result.code);
+
+        if (process.env.ONLOCAL === 'true') {
+            console.log(result.code);
+        } else {
+            const sms = await SendVerifyCodeSms(userName, result.code);
+            if (sms.data.status != 1) {
+                throw { message: mlogInStepOne.fail_1, statusCode: 422 };
+            }
+        }
+        
         res.json({ message: mlogInStepOne.ok, expireTime: process.env.SMS_RESEND_DELAY });
     } catch (err) {
         console.log(err);
         res.status(err.statusCode || 422).json(err);
     }
-
 }
 
 exports.logInStepTwo = async (req, res, next) => {
@@ -54,7 +57,7 @@ exports.logInStepTwo = async (req, res, next) => {
         const verifyCodeDelete = await VerifyCode.deleteOne({ user_id: user._id }).lean();
 
 
-        res.json({ message: mlogInStepTwo.ok, token, sessionTime: process.env.USERS_SESSIONS_TIME });
+        res.json({ message: mlogInStepTwo.ok, token, sessionTime: process.env.USERS_SESSIONS_TIME, user: user.data, role: user.role_id.name });
     } catch (err) {
         res.status(err.statusCode || 422).json(err);
     }

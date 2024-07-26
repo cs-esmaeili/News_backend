@@ -4,27 +4,27 @@
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/filemanager": {
-        "name": "Dashborad Page",
+        "name": "filemanager Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/category": {
-        "name": "Dashborad Page",
+        "name": "category Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/post/createPost": {
-        "name": "Dashborad Page",
+        "name": "createPost Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/post/postList": {
-        "name": "Dashborad Page",
+        "name": "postList Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/role": {
-        "name": "Dashborad Page",
+        "name": "role Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/dashboard/user": {
-        "name": "Dashborad Page",
+        "name": "user Page",
         "disc": "This is Permission is need for see Dashborad Page "
     },
     "/user/registerPure": {
