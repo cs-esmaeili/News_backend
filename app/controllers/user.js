@@ -55,9 +55,16 @@ exports.logInStepTwo = async (req, res, next) => {
         const { _id, token } = await createToken(userName, user.token_id);
         const userUpdate = await User.updateOne({ _id: user._id }, { token_id: _id });
         const verifyCodeDelete = await VerifyCode.deleteOne({ user_id: user._id }).lean();
+        const userPermission = await User.userPermissions(user._id);
 
-
-        res.json({ message: mlogInStepTwo.ok, token, sessionTime: process.env.USERS_SESSIONS_TIME, user: user.data, role: user.role_id.name });
+        res.json({
+            message: mlogInStepTwo.ok,
+            token,
+            sessionTime: process.env.USERS_SESSIONS_TIME,
+            user: user.data,
+            role: user.role_id.name,
+            userPermission
+        });
     } catch (err) {
         res.status(err.statusCode || 422).json(err);
     }

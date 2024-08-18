@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=development nodemon server.js",
-    "build": "cross-env NODE_ENV=production nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "nodemon server.js"
   },
   "author": "Javad Esmaeili",
   "license": "MIT",
@@ -35,8 +35,5 @@
     "uuid": "^9.0.1",
     "uuidv4": "^6.2.13",
     "yup": "^1.2.0"
-  },
-  "devDependencies": {
-    "cross-env": "^7.0.3"
   }
 }
